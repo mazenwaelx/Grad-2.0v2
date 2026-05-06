@@ -1,0 +1,99 @@
+.auth-page {
+  min-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Animated Background */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #2d1b4e 100%);
+  z-index: 0;
+}
+
+.background::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+  animation: gradientShift 15s ease infinite;
+}
+
+body.light-mode .background {
+  background: linear-gradient(135deg, #f5ebe0 0%, #ede4d3 50%, #e8dcc8 100%);
+}
+
+body.light-mode .background::before {
+  background: radial-gradient(circle at 20% 50%, rgba(184, 149, 111, 0.2) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139, 115, 85, 0.15) 0%, transparent 50%);
+}
+
+/* Floating Particles */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  animation: float 20s infinite;
+}
+
+.particle.legal-symbol {
+  background: transparent;
+  color: rgba(212, 175, 55, 0.4);
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+  animation: float 20s infinite, rotateSymbol 15s linear infinite;
+}
+
+body.light-mode .particle {
+  background: rgba(139, 115, 85, 0.4);
+}
+
+/* Main Container */
+.auth-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 60px 20px 80px 20px;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes gradientShift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-50px, -50px); }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  50% {
+    transform: translateY(-100vh) translateX(50px) scale(1.5);
+  }
+}
+
+@keyframes rotateSymbol {
+  from { transform: translateY(0) translateX(0) rotate(0deg); }
+  to { transform: translateY(-100vh) translateX(50px) rotate(360deg); }
+}

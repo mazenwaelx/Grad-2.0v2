@@ -1,0 +1,694 @@
+###############################################################################
+# LawyerConnect API - Complete Test Scenarios
+# Use with VS Code REST Client extension or similar HTTP client
+# Base URL: https://localhost:7000 (adjust port as needed)
+###############################################################################
+
+@baseUrl = https://localhost:5128
+@contentType = application/json
+
+# Variables (will be set from responses)
+@userToken = 
+@lawyerToken = 
+@adminToken = 
+@userId = 
+@lawyerId = 
+@bookingId = 
+@reviewId = 
+@notificationId = 
+@specializationId = 
+@paymentSessionId = 
+
+###############################################################################
+# SCENARIO 1: USER REGISTRATION & AUTHENTICATION
+###############################################################################
+
+### 1.1 Register New User (Client)
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Ahmed Hassan",
+  "email": "ahmed.hassan@example.com",
+  "password": "SecurePass123!",
+  "phone": "+201234567890",
+  "city": "Cairo",
+  "role": "User"
+}
+
+### 1.2 Login User
+# @name loginUser
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "ahmed.hassan@example.com",
+  "password": "SecurePass123!"
+}
+
+### 1.3 Extract User Token (run after login)
+@userToken = {{loginUser.response.body.token}}
+@userId = {{loginUser.response.body.userId}}
+
+### 1.4 Refresh Token
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{loginUser.response.body.refreshToken}}"
+}
+
+### 1.5 Get User Profile
+GET {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer {{userToken}}
+
+###############################################################################
+# SCENARIO 2: LAWYER REGISTRATION & PROFILE SETUP
+###############################################################################
+
+### 2.1 Register New Lawyer User
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Dr. Mohamed Ali",
+  "email": "mohamed.ali@lawfirm.com",
+  "password": "LawyerPass123!",
+  "phone": "+201098765432",
+  "city": "Alexandria",
+  "role": "Lawyer"
+}
+
+### 2.2 Login Lawyer
+# @name loginLawyer
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "mohamed.ali@lawfirm.com",
+  "password": "LawyerPass123!"
+}
+
+### 2.3 Extract Lawyer Token
+@lawyerToken = {{loginLawyer.response.body.token}}
+@lawyerUserId = {{loginLawyer.response.body.userId}}
+
+### 2.4 Create Lawyer Profile
+# @name createLawyerProfile
+POST {{baseUrl}}/api/lawyers/register
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "bio": "Experienced corporate lawyer with 10+ years in commercial law",
+  "experienceYears": 10,
+  "licenseNumber": "LAW-2014-12345",
+  "latitude": 31.2001,
+  "longitude": 29.9187,
+  "specializationIds": [1, 2]
+}
+
+### 2.5 Extract Lawyer ID
+@lawyerId = {{createLawyerProfile.response.body.id}}
+
+### 2.6 Get Lawyer Profile
+GET {{baseUrl}}/api/lawyers/{{lawyerId}}
+Authorization: Bearer {{lawyerToken}}
+
+###############################################################################
+# SCENARIO 3: SPECIALIZATIONS MANAGEMENT
+###############################################################################
+
+### 3.1 Get All Specializations
+GET {{baseUrl}}/api/specializations
+Authorization: Bearer {{userToken}}
+
+### 3.2 Create Specialization (Admin only)
+# @name createSpecialization
+POST {{baseUrl}}/api/specializations
+Authorization: Bearer {{adminToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Corporate Law",
+  "description": "Business contracts, mergers, acquisitions, and corporate governance"
+}
+
+### 3.3 Extract Specialization ID
+@specializationId = {{createSpecialization.response.body.id}}
+
+### 3.4 Get Specialization by ID
+GET {{baseUrl}}/api/specializations/{{specializationId}}
+Authorization: Bearer {{userToken}}
+
+### 3.5 Update Specialization (Admin only)
+PUT {{baseUrl}}/api/specializations/{{specializationId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Corporate & Commercial Law",
+  "description": "Business contracts, mergers, acquisitions, corporate governance, and commercial disputes"
+}
+
+### 3.6 Delete Specialization (Admin only - will fail if assigned to lawyers)
+DELETE {{baseUrl}}/api/specializations/{{specializationId}}
+Authorization: Bearer {{adminToken}}
+
+###############################################################################
+# SCENARIO 4: LAWYER PRICING SETUP
+###############################################################################
+
+### 4.1 Set Pricing for Consultation
+POST {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "specializationId": 1,
+  "interactionTypeId": 1,
+  "price": 500.00,
+  "durationMinutes": 60
+}
+
+### 4.2 Set Pricing for Court Representation
+POST {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "specializationId": 1,
+  "interactionTypeId": 2,
+  "price": 5000.00,
+  "durationMinutes": 0
+}
+
+### 4.3 Get All Lawyer Pricing
+GET {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing
+Authorization: Bearer {{lawyerToken}}
+
+### 4.4 Update Pricing
+PUT {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "specializationId": 1,
+  "interactionTypeId": 1,
+  "price": 600.00,
+  "durationMinutes": 60
+}
+
+### 4.5 Delete Pricing
+DELETE {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing?specializationId=1&interactionTypeId=2
+Authorization: Bearer {{lawyerToken}}
+
+###############################################################################
+# SCENARIO 5: ADMIN - LAWYER VERIFICATION
+###############################################################################
+
+### 5.1 Admin Login
+# @name loginAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@lawyerconnect.com",
+  "password": "AdminPass123!"
+}
+
+### 5.2 Extract Admin Token
+@adminToken = {{loginAdmin.response.body.token}}
+
+### 5.3 Get Pending Lawyers
+GET {{baseUrl}}/api/admin/lawyers/pending?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 5.4 Verify Lawyer
+PUT {{baseUrl}}/api/admin/lawyers/{{lawyerId}}/verify
+Authorization: Bearer {{adminToken}}
+
+### 5.5 Reject Lawyer (Alternative)
+POST {{baseUrl}}/api/admin/lawyers/{{lawyerId}}/reject
+Authorization: Bearer {{adminToken}}
+Content-Type: {{contentType}}
+
+{
+  "reason": "License number could not be verified. Please provide additional documentation."
+}
+
+###############################################################################
+# SCENARIO 6: LAWYER SEARCH & DISCOVERY
+###############################################################################
+
+### 6.1 Search All Verified Lawyers
+GET {{baseUrl}}/api/lawyers/search?page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 6.2 Search by Specialization
+GET {{baseUrl}}/api/lawyers/search?specializationId=1&page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 6.3 Search by Location (within 50km radius)
+GET {{baseUrl}}/api/lawyers/search?latitude=30.0444&longitude=31.2357&radiusKm=50&page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 6.4 Search by Experience
+GET {{baseUrl}}/api/lawyers/search?minExperienceYears=5&page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 6.5 Search by Rating
+GET {{baseUrl}}/api/lawyers/search?minRating=4.0&page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 6.6 Combined Search (Specialization + Location + Experience + Rating)
+GET {{baseUrl}}/api/lawyers/search?specializationId=1&latitude=30.0444&longitude=31.2357&radiusKm=50&minExperienceYears=5&minRating=4.0&page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+###############################################################################
+# SCENARIO 7: BOOKING CREATION & MANAGEMENT
+###############################################################################
+
+### 7.1 Create Booking
+# @name createBooking
+POST {{baseUrl}}/api/bookings
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+{
+  "lawyerId": {{lawyerId}},
+  "specializationId": 1,
+  "interactionTypeId": 1,
+  "date": "2026-04-20T10:00:00Z",
+  "notes": "Need consultation regarding business contract review"
+}
+
+### 7.2 Extract Booking ID
+@bookingId = {{createBooking.response.body.id}}
+
+### 7.3 Get Booking Details
+GET {{baseUrl}}/api/bookings/{{bookingId}}
+Authorization: Bearer {{userToken}}
+
+### 7.4 Get User's Bookings
+GET {{baseUrl}}/api/bookings/user/{{userId}}?page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 7.5 Get Lawyer's Bookings
+GET {{baseUrl}}/api/bookings/lawyer/{{lawyerId}}?page=1&limit=10
+Authorization: Bearer {{lawyerToken}}
+
+### 7.6 Update Booking Status (Lawyer Confirms)
+PUT {{baseUrl}}/api/bookings/{{bookingId}}/status
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Confirmed"
+}
+
+### 7.7 Update Booking Status (Complete)
+PUT {{baseUrl}}/api/bookings/{{bookingId}}/status
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Completed"
+}
+
+### 7.8 Cancel Booking
+PUT {{baseUrl}}/api/bookings/{{bookingId}}/status
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Cancelled"
+}
+
+###############################################################################
+# SCENARIO 8: PAYMENT PROCESSING (STRIPE)
+###############################################################################
+
+### 8.1 Create Checkout Session
+# @name createCheckout
+POST {{baseUrl}}/api/payments/create-session
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+{
+  "bookingId": {{bookingId}}
+}
+
+### 8.2 Extract Payment Session ID and Checkout URL
+@paymentSessionId = {{createCheckout.response.body.id}}
+@checkoutUrl = {{createCheckout.response.body.checkoutUrl}}
+
+### 8.3 Get Payment Session Details
+GET {{baseUrl}}/api/payments/{{paymentSessionId}}
+Authorization: Bearer {{userToken}}
+
+### 8.4 Stripe Webhook (Checkout Session Completed)
+# This would be called by Stripe, not manually
+POST {{baseUrl}}/api/payments/webhook
+Content-Type: {{contentType}}
+Stripe-Signature: test_signature
+
+{
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_123",
+      "payment_status": "paid",
+      "metadata": {
+        "bookingId": "{{bookingId}}"
+      }
+    }
+  }
+}
+
+### 8.5 Refund Payment (Admin only)
+POST {{baseUrl}}/api/payments/{{paymentSessionId}}/refund
+Authorization: Bearer {{adminToken}}
+Content-Type: {{contentType}}
+
+{
+  "reason": "Customer requested cancellation"
+}
+
+###############################################################################
+# SCENARIO 9: CHAT MESSAGING
+###############################################################################
+
+### 9.1 Get Chat Room for Booking
+GET {{baseUrl}}/api/chat/{{bookingId}}
+Authorization: Bearer {{userToken}}
+
+### 9.2 Send Message (User to Lawyer)
+POST {{baseUrl}}/api/chat/{{bookingId}}/messages
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+"Hello Dr. Mohamed, I have a question about the contract clause we discussed."
+
+### 9.3 Send Message (Lawyer to User)
+POST {{baseUrl}}/api/chat/{{bookingId}}/messages
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+"Hello Ahmed, I'd be happy to clarify. Which specific clause are you referring to?"
+
+### 9.4 Get Messages (Paginated)
+GET {{baseUrl}}/api/chat/{{bookingId}}/messages?page=1&limit=50
+Authorization: Bearer {{userToken}}
+
+### 9.5 Archive Chat Room
+DELETE {{baseUrl}}/api/chat/{{bookingId}}
+Authorization: Bearer {{lawyerToken}}
+
+###############################################################################
+# SCENARIO 10: REVIEWS & RATINGS
+###############################################################################
+
+### 10.1 Create Review (After Booking Completed)
+# @name createReview
+POST {{baseUrl}}/api/reviews
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+{
+  "bookingId": {{bookingId}},
+  "rating": 5,
+  "comment": "Excellent service! Dr. Mohamed was very professional and provided clear guidance on my business contract. Highly recommended!"
+}
+
+### 10.2 Extract Review ID
+@reviewId = {{createReview.response.body.id}}
+
+### 10.3 Get Lawyer's Reviews
+GET {{baseUrl}}/api/reviews/lawyer/{{lawyerId}}?page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 10.4 Get User's Reviews
+GET {{baseUrl}}/api/reviews/user/{{userId}}?page=1&limit=10
+Authorization: Bearer {{userToken}}
+
+### 10.5 Delete Review (Admin only)
+DELETE {{baseUrl}}/api/reviews/{{reviewId}}
+Authorization: Bearer {{adminToken}}
+
+###############################################################################
+# SCENARIO 11: NOTIFICATIONS
+###############################################################################
+
+### 11.1 Get User Notifications
+GET {{baseUrl}}/api/notifications?page=1&limit=20
+Authorization: Bearer {{userToken}}
+
+### 11.2 Get Unread Count
+GET {{baseUrl}}/api/notifications/unread-count
+Authorization: Bearer {{userToken}}
+
+### 11.3 Mark Notification as Read
+# @name getNotifications
+GET {{baseUrl}}/api/notifications?page=1&limit=1
+Authorization: Bearer {{userToken}}
+
+###
+@notificationId = {{getNotifications.response.body.[0].id}}
+
+###
+PUT {{baseUrl}}/api/notifications/{{notificationId}}/read
+Authorization: Bearer {{userToken}}
+
+### 11.4 Mark All Notifications as Read
+PUT {{baseUrl}}/api/notifications/mark-all-read
+Authorization: Bearer {{userToken}}
+
+### 11.5 Delete Notification
+DELETE {{baseUrl}}/api/notifications/{{notificationId}}
+Authorization: Bearer {{userToken}}
+
+###############################################################################
+# SCENARIO 12: ADMIN OPERATIONS
+###############################################################################
+
+### 12.1 Get All Users (Admin)
+GET {{baseUrl}}/api/admin/users?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 12.2 Get All Bookings (Admin)
+GET {{baseUrl}}/api/admin/bookings?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 12.3 Get All Payments (Admin)
+GET {{baseUrl}}/api/admin/payments?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 12.4 Suspend User
+PUT {{baseUrl}}/api/admin/users/{{userId}}/suspend
+Authorization: Bearer {{adminToken}}
+
+### 12.5 Unsuspend User
+PUT {{baseUrl}}/api/admin/users/{{userId}}/unsuspend
+Authorization: Bearer {{adminToken}}
+
+###############################################################################
+# SCENARIO 13: ERROR HANDLING TESTS
+###############################################################################
+
+### 13.1 Test Unauthorized Access (No Token)
+GET {{baseUrl}}/api/users/{{userId}}
+
+### 13.2 Test Invalid Token
+GET {{baseUrl}}/api/users/{{userId}}
+Authorization: Bearer invalid_token_here
+
+### 13.3 Test Duplicate Email Registration
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Duplicate User",
+  "email": "ahmed.hassan@example.com",
+  "password": "SecurePass123!",
+  "phone": "+201234567890",
+  "city": "Cairo",
+  "role": "User"
+}
+
+### 13.4 Test Invalid Pagination (Page < 1)
+GET {{baseUrl}}/api/lawyers/search?page=0&limit=10
+Authorization: Bearer {{userToken}}
+
+### 13.5 Test Invalid Pagination (Limit > 100)
+GET {{baseUrl}}/api/lawyers/search?page=1&limit=200
+Authorization: Bearer {{userToken}}
+
+### 13.6 Test Duplicate Review (Same User, Same Booking)
+POST {{baseUrl}}/api/reviews
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+{
+  "bookingId": {{bookingId}},
+  "rating": 4,
+  "comment": "Another review for the same booking"
+}
+
+### 13.7 Test Invalid Price (Negative)
+POST {{baseUrl}}/api/lawyers/{{lawyerId}}/pricing
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "specializationId": 1,
+  "interactionTypeId": 1,
+  "price": -100.00,
+  "durationMinutes": 60
+}
+
+### 13.8 Test Message Too Long (> 1000 chars)
+POST {{baseUrl}}/api/chat/{{bookingId}}/messages
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+
+### 13.9 Test Access Other User's Notification
+PUT {{baseUrl}}/api/notifications/999/read
+Authorization: Bearer {{userToken}}
+
+### 13.10 Test Delete Specialization with Assigned Lawyers
+DELETE {{baseUrl}}/api/specializations/1
+Authorization: Bearer {{adminToken}}
+
+###############################################################################
+# SCENARIO 14: COMPLETE USER JOURNEY (END-TO-END)
+###############################################################################
+
+### 14.1 User Registers
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Sara Ibrahim",
+  "email": "sara.ibrahim@example.com",
+  "password": "UserPass123!",
+  "phone": "+201555666777",
+  "city": "Giza",
+  "role": "User"
+}
+
+### 14.2 User Logs In
+# @name e2eUserLogin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "sara.ibrahim@example.com",
+  "password": "UserPass123!"
+}
+
+###
+@e2eUserToken = {{e2eUserLogin.response.body.token}}
+@e2eUserId = {{e2eUserLogin.response.body.userId}}
+
+### 14.3 User Searches for Lawyers
+GET {{baseUrl}}/api/lawyers/search?specializationId=1&page=1&limit=10
+Authorization: Bearer {{e2eUserToken}}
+
+### 14.4 User Views Lawyer Profile
+GET {{baseUrl}}/api/lawyers/{{lawyerId}}
+Authorization: Bearer {{e2eUserToken}}
+
+### 14.5 User Creates Booking
+# @name e2eBooking
+POST {{baseUrl}}/api/bookings
+Authorization: Bearer {{e2eUserToken}}
+Content-Type: {{contentType}}
+
+{
+  "lawyerId": {{lawyerId}},
+  "specializationId": 1,
+  "interactionTypeId": 1,
+  "date": "2026-04-25T14:00:00Z",
+  "notes": "Need legal advice for property purchase"
+}
+
+###
+@e2eBookingId = {{e2eBooking.response.body.id}}
+
+### 14.6 User Creates Payment Session
+# @name e2ePayment
+POST {{baseUrl}}/api/payments/create-session
+Authorization: Bearer {{e2eUserToken}}
+Content-Type: {{contentType}}
+
+{
+  "bookingId": {{e2eBookingId}}
+}
+
+### 14.7 Lawyer Confirms Booking
+PUT {{baseUrl}}/api/bookings/{{e2eBookingId}}/status
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Confirmed"
+}
+
+### 14.8 User Sends Message
+POST {{baseUrl}}/api/chat/{{e2eBookingId}}/messages
+Authorization: Bearer {{e2eUserToken}}
+Content-Type: {{contentType}}
+
+"Hello, I'm looking forward to our consultation. Should I bring any specific documents?"
+
+### 14.9 Lawyer Replies
+POST {{baseUrl}}/api/chat/{{e2eBookingId}}/messages
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+"Hello Sara, yes please bring the property deed, purchase agreement, and any correspondence with the seller."
+
+### 14.10 Lawyer Completes Booking
+PUT {{baseUrl}}/api/bookings/{{e2eBookingId}}/status
+Authorization: Bearer {{lawyerToken}}
+Content-Type: {{contentType}}
+
+{
+  "status": "Completed"
+}
+
+### 14.11 User Leaves Review
+POST {{baseUrl}}/api/reviews
+Authorization: Bearer {{e2eUserToken}}
+Content-Type: {{contentType}}
+
+{
+  "bookingId": {{e2eBookingId}},
+  "rating": 5,
+  "comment": "Very helpful consultation! Dr. Mohamed explained everything clearly and helped me understand the legal aspects of my property purchase."
+}
+
+### 14.12 User Checks Notifications
+GET {{baseUrl}}/api/notifications?page=1&limit=20
+Authorization: Bearer {{e2eUserToken}}
+
+###############################################################################
+# NOTES & TIPS
+###############################################################################
+
+# 1. Run requests in order for each scenario
+# 2. Variables (@token, @userId, etc.) are automatically extracted from responses
+# 3. Adjust @baseUrl if your API runs on a different port
+# 4. Some requests require previous requests to complete successfully
+# 5. Admin token requires an admin user to be created first
+# 6. Stripe webhook signature validation may need to be disabled for testing
+# 7. Use ### to separate requests
+# 8. Use # @name to name a request for variable extraction
+# 9. Access response data with {{requestName.response.body.propertyName}}
+
+###############################################################################
+# END OF TEST SCENARIOS
+###############################################################################

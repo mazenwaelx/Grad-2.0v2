@@ -1,0 +1,278 @@
+.message {
+  display: flex;
+  gap: 12px;
+  max-width: 75%;
+  animation: messageSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.message.animate {
+  animation: messageSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.message::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, rgba(212, 175, 55, 0.3), rgba(102, 126, 234, 0.3));
+  border-radius: 20px;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.message:hover::before {
+  opacity: 1;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.user-message {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.assistant-message {
+  align-self: flex-start;
+}
+
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.message-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 16px 20px;
+  border-radius: 18px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.message-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.message:hover .message-content::before {
+  left: 100%;
+}
+
+.message:hover .message-content {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.user-message .message-content {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+body.light-mode .message-content {
+  background: rgba(255, 251, 245, 0.85);
+  border: 1px solid rgba(184, 149, 111, 0.3);
+  color: #3d3025;
+  font-weight: 500;
+}
+
+body.light-mode .user-message .message-content {
+  background: linear-gradient(135deg, rgba(166, 138, 100, 0.25) 0%, rgba(139, 115, 85, 0.25) 100%);
+  border: 1px solid rgba(139, 115, 85, 0.4);
+  color: #3d3025;
+  font-weight: 500;
+}
+
+.message-actions {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+}
+
+.user-message .message-actions {
+  left: -90px;
+  top: 0;
+}
+
+.assistant-message .message-actions {
+  right: -90px;
+  top: 0;
+}
+
+.message:hover .message-actions {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reply-btn,
+.copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.reply-btn:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.4);
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.copy-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.reply-btn:active,
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.copy-btn.copied {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: rgba(76, 175, 80, 0.5);
+  color: #4caf50;
+  animation: copySuccess 0.5s ease;
+}
+
+body.light-mode .reply-btn,
+body.light-mode .copy-btn {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .reply-btn:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+body.light-mode .copy-btn:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* Message Files */
+.message-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.message-file-tag {
+  background: rgba(102, 126, 234, 0.2);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+  animation: fileAppear 0.5s ease;
+}
+
+.message-file-tag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.message-file-tag:hover {
+  background: rgba(102, 126, 234, 0.35);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4),
+              0 0 15px rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+.message-file-tag:hover::before {
+  left: 100%;
+}
+
+.message-file-tag .file-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.message-file-tag .file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+body.light-mode .message-file-tag {
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  color: #1a1a2e;
+}
+
+body.light-mode .message-file-tag:hover {
+  background: rgba(102, 126, 234, 0.25);
+}
+
+@media (max-width: 768px) {
+  .message-actions {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 8px;
+    justify-content: flex-start;
+  }
+
+  .user-message .message-actions,
+  .assistant-message .message-actions {
+    left: auto;
+    right: auto;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+}

@@ -1,0 +1,1158 @@
+{
+	"info": {
+		"_postman_id": "lawyerconnect-api-collection",
+		"name": "LawyerConnect API",
+		"description": "Complete API collection for LawyerConnect - User registration, Lawyer onboarding, Bookings, and Payments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User (Default Role)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"UserId\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"phone\": \"+1234567890\",\n  \"city\": \"New York\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register User with Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"phone\": \"+1234567890\",\n  \"city\": \"New York\",\n  \"role\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register Admin User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Admin User\",\n  \"email\": \"admin@lawyerconnect.com\",\n  \"password\": \"AdminPass123!\",\n  \"phone\": \"+1234567892\",\n  \"city\": \"Washington DC\",\n  \"role\": \"Admin\",\n  \"adminSecret\": \"LawyerConnect_Admin_Registration_Secret_2026\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Register Lawyer User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Lawyer User\",\n  \"email\": \"lawyer@example.com\",\n  \"password\": \"LawyerPass123!\",\n  \"phone\": \"+1234567893\",\n  \"city\": \"Los Angeles\",\n  \"role\": \"Lawyer\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login as User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"UserToken\", response.token);",
+									"    pm.collectionVariables.set(\"UserId\", response.user.id);",
+									"    console.log(\"User Token saved:\", response.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/login",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login as Lawyer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"LawyerToken\", response.token);",
+									"    pm.collectionVariables.set(\"LawyerUserId\", response.user.id);",
+									"    console.log(\"Lawyer Token saved:\", response.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"lawyer@example.com\",\n  \"password\": \"LawyerPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/login",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Login as Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"AdminToken\", response.token);",
+									"    console.log(\"Admin Token saved:\", response.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@lawyerconnect.com\",\n  \"password\": \"AdminPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/login",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User (Me)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/me",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "me"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/users?page=1&limit=10",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Updated Name\",\n  \"phone\": \"+1987654321\",\n  \"city\": \"San Francisco\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/users/update",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "users", "update"]
+						}
+					}
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"SecurePass123!\",\n  \"newPassword\": \"NewSecurePass456!\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/users/change-password",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "users", "change-password"]
+						}
+					}
+				},
+				{
+					"name": "Update User Role (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{UserId}},\n  \"role\": \"Lawyer\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/users/update-role",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "users", "update-role"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Lawyers",
+			"item": [
+				{
+					"name": "Register as Lawyer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"LawyerId\", response.id);",
+									"    console.log(\"Lawyer ID saved:\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"specialization\": \"Criminal Law\",\n  \"experienceYears\": 10,\n  \"price\": 150.00,\n  \"address\": \"123 Legal Street, New York, NY 10001\",\n  \"latitude\": 40.7128,\n  \"longitude\": -74.0060\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers", "register"]
+						}
+					}
+				},
+				{
+					"name": "Get All Lawyers (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers?page=1&limit=10",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Lawyer by ID (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers/{{LawyerId}}",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers", "{{LawyerId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get My Lawyer Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{LawyerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers/me",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers", "me"]
+						}
+					}
+				},
+				{
+					"name": "Verify Lawyer (Admin Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers/{{LawyerId}}/verify",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers", "{{LawyerId}}", "verify"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"BookingId\", response.id);",
+									"    console.log(\"Booking ID saved:\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lawyerId\": {{LawyerId}},\n  \"date\": \"2024-12-25T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Create Booking as Admin (Override UserId)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{UserId}},\n  \"lawyerId\": {{LawyerId}},\n  \"date\": \"2024-12-27T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get Booking by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/{{BookingId}}",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "{{BookingId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get User's Bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/user",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "user"]
+						}
+					}
+				},
+				{
+					"name": "Get Lawyer's Bookings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{LawyerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/lawyer",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "lawyer"]
+						}
+					}
+				},
+				{
+					"name": "Get Lawyer's Bookings (Admin - Query Any Lawyer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/lawyer?lawyerId={{LawyerId}}",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "lawyer"],
+							"query": [
+								{
+									"key": "lawyerId",
+									"value": "{{LawyerId}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Booking Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AdminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"Confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/{{BookingId}}/status",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "{{BookingId}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Update Booking Status (As Lawyer)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{LawyerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"Completed\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings/{{BookingId}}/status",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings", "{{BookingId}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Create Payment Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"PaymentSessionId\", response.id);",
+									"    console.log(\"Payment Session ID saved:\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": {{BookingId}},\n  \"amount\": 150.00,\n  \"provider\": \"Stripe\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/payments/create-session",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "payments", "create-session"]
+						}
+					}
+				},
+				{
+					"name": "Confirm Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{UserToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": {{PaymentSessionId}},\n  \"providerSessionId\": \"stripe_session_1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/payments/confirm",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "payments", "confirm"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Complete Workflow",
+			"item": [
+				{
+					"name": "1. Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"WorkflowUserId\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Workflow Test User\",\n  \"email\": \"workflow@test.com\",\n  \"password\": \"TestPass123!\",\n  \"phone\": \"+1999999999\",\n  \"city\": \"Test City\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "2. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"WorkflowToken\", response.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"workflow@test.com\",\n  \"password\": \"TestPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/auth/login",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "3. Register as Lawyer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"WorkflowLawyerId\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{WorkflowToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"specialization\": \"Test Law\",\n  \"experienceYears\": 3,\n  \"price\": 100.00,\n  \"address\": \"Test Address\",\n  \"latitude\": 0.0,\n  \"longitude\": 0.0\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/lawyers/register",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "lawyers", "register"]
+						}
+					}
+				},
+				{
+					"name": "4. Create Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"WorkflowBookingId\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{WorkflowToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lawyerId\": {{WorkflowLawyerId}},\n  \"date\": \"2024-12-30T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/bookings",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "5. Create Payment Session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set(\"WorkflowPaymentSessionId\", response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{WorkflowToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": {{WorkflowBookingId}},\n  \"amount\": 100.00,\n  \"provider\": \"TestProvider\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/payments/create-session",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "payments", "create-session"]
+						}
+					}
+				},
+				{
+					"name": "6. Confirm Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{WorkflowToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": {{WorkflowPaymentSessionId}},\n  \"providerSessionId\": \"test_provider_session_12345\"\n}"
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/api/payments/confirm",
+							"host": ["{{BaseUrl}}"],
+							"path": ["api", "payments", "confirm"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "http://localhost:5128",
+			"type": "string"
+		},
+		{
+			"key": "UserToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "LawyerToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "AdminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "UserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "LawyerId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "BookingId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "PaymentSessionId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "LawyerUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "WorkflowToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "WorkflowUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "WorkflowLawyerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "WorkflowBookingId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "WorkflowPaymentSessionId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

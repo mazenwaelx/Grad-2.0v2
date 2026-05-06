@@ -1,0 +1,45 @@
+# Build outputs
+bin/
+obj/
+dist/
+
+# Frontend dependencies
+FrontEnd/node_modules/
+FrontEnd/.vite/
+FrontEnd/dist/
+FrontEnd/.next/
+
+# IDE
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Configuration with sensitive data (uncomment if you add real API keys)
+# appsettings.json
+# appsettings.Development.json
+# appsettings.Production.json
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
