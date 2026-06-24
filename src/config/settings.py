@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 # Model Configuration
-MODEL_NAME = "models/gemini-2.0-flash-lite"
+MODEL_NAME = "models/gemini-2.5-flash"
 
 
 # Paths

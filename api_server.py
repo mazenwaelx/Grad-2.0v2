@@ -68,7 +68,7 @@ if frontend_path.exists():
 class ChatRequest(BaseModel):
     message: str
     chat_id: str
-    user_id: str
+    user_id: str  # Can be email (for backward compatibility) or actual user_id
 
 class UserRegister(BaseModel):
 
@@ -100,41 +100,48 @@ def get_or_create_agent(user_id: str, chat_id: str):
     """Get or create an agent for a specific user and chat"""
     key = f"{user_id}_{chat_id}"
     
-    if key not in user_agents:
-        # Initialize retriever (shared across all users)
-        if "retriever" not in globals():
-            global retriever
-            print("[INFO] Initializing retriever...")
-            retriever, _, _, _ = prepare_retriever("data/labour_data/labour_law.md")
-            print("[INFO] Retriever ready")
-        
-        # Create chat in database if it doesn't exist
-        create_chat(chat_id, user_id)
-        
-        # Create database-backed history store
-        history_store = DatabaseChatMessageHistory(chat_id)
-        
-        # Build LLM
-        llm = init_llm(MODEL_NAME)
-        
-        # Build LangChain tools with file processor
-        global file_processor
-        tools = build_langchain_tools(retriever, history_store, file_processor)
-        
-        # Create LangChain ReAct agent
-        agent = LangChainReActAgent(
-            llm=llm,
-            tools=tools,
-            history_store=history_store,
-            log_callback=lambda msg: print(f"[AGENT] {msg}"),
-            max_iterations=4,  # Reduced to minimize API calls and avoid rate limits
-            verbose=True,
-        )
-        
-        user_agents[key] = agent
-        user_histories[key] = history_store
+    # Always create a fresh agent - don't cache
+    # This ensures the agent has no memory/context from previous messages
+    # But messages are still stored in database for display
     
-    return user_agents[key]
+    # Initialize retriever (shared across all users)
+    if "retriever" not in globals():
+        global retriever
+        print("[INFO] Initializing retriever...")
+        retriever, _, _, _ = prepare_retriever("data/labour_data/labour_law.md")
+        print("[INFO] Retriever ready")
+    
+    # Create chat in database if it doesn't exist
+    create_chat(chat_id, user_id)
+    
+    # Create database-backed history store (for display only, not for context)
+    history_store = DatabaseChatMessageHistory(chat_id)
+    
+    # Build LLM
+    llm = init_llm(MODEL_NAME)
+    
+    # Build LangChain tools with file processor
+    global file_processor
+    tools = build_langchain_tools(retriever, history_store, file_processor)
+    
+    # Create LangChain ReAct agent with EMPTY history for fresh context
+    # The history_store still saves messages to DB, but agent doesn't use them for context
+    from langchain_core.chat_history import InMemoryChatMessageHistory
+    empty_history = InMemoryChatMessageHistory()  # Fresh memory every time
+    
+    agent = LangChainReActAgent(
+        llm=llm,
+        tools=tools,
+        history_store=empty_history,  # Use empty history for no context
+        log_callback=lambda msg: print(f"[AGENT] {msg}"),
+        max_iterations=10,  # Increased to handle complex queries
+        verbose=True,
+    )
+    
+    # Still save the database history store to save messages
+    user_histories[key] = history_store
+    
+    return agent
 
 @app.get("/")
 async def root():
@@ -156,14 +163,22 @@ def login(credentials: UserLogin):
     """Login user"""
     success, user = verify_user(credentials.email, credentials.password)
     if success:
-        return UserResponse(email=user['email'], name=user['name'])
+        # Use PascalCase field names from SQL Server
+        return UserResponse(email=user['Email'], name=user['Name'])
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/api/chats/{user_email}")
 def get_chats(user_email: str):
-    """Get all chats for a user"""
-    chats = get_user_chats(user_email)
+    """Get all chats for a user (accepts email, converts to user_id)"""
+    # Get user to find their ID
+    from database.user_manager import get_user
+    user = get_user(user_email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Use user_id to get chats
+    chats = get_user_chats(user['Id'])  # SQL Server uses 'Id' as column name
     return {"chats": chats}
 
 @app.get("/api/messages/{chat_id}")
@@ -184,14 +199,34 @@ def chat(request: ChatRequest):
     try:
         global file_processor
         
+        # Convert email to user_id if necessary (backward compatibility)
+        user_identifier = request.user_id
+        if '@' in user_identifier:  # It's an email
+            from database.user_manager import get_user
+            user = get_user(user_identifier)
+            if not user:
+                raise HTTPException(status_code=404, detail="User not found")
+            actual_user_id = str(user['Id'])
+        else:
+            actual_user_id = user_identifier
+        
         # Check files before processing
         files_before = file_processor.list_uploaded_files() if file_processor else []
         
-        # Get or create agent for this user/chat
-        agent = get_or_create_agent(request.user_id, request.chat_id)
+        # Get agent (fresh one with no context each time)
+        agent = get_or_create_agent(actual_user_id, request.chat_id)
         
-        # Get response from agent
+        # Manually save user message to database
+        key = f"{actual_user_id}_{request.chat_id}"
+        if key in user_histories:
+            user_histories[key].add_user_message(request.message)
+        
+        # Get response from agent (with no memory/context)
         response = agent.ask(request.message)
+        
+        # Manually save AI response to database
+        if key in user_histories:
+            user_histories[key].add_ai_message(response)
         
         # Check files after processing
         files_after = file_processor.list_uploaded_files() if file_processor else []
@@ -228,7 +263,15 @@ async def health():
 @app.delete("/api/chat/{user_id}/{chat_id}")
 def delete_chat_endpoint(user_id: str, chat_id: str):
     """Delete a chat and its history"""
-    key = f"{user_id}_{chat_id}"
+    # Convert email to user_id if necessary
+    actual_user_id = user_id
+    if '@' in user_id:  # It's an email
+        from database.user_manager import get_user
+        user = get_user(user_id)
+        if user:
+            actual_user_id = str(user['Id'])
+    
+    key = f"{actual_user_id}_{chat_id}"
     
     # Remove from memory
     if key in user_agents:
@@ -349,6 +392,7 @@ def start_react_frontend():
     """Start the React frontend dev server in a subprocess"""
     import subprocess
     import sys
+    import shutil
     
     react_dir = Path(__file__).parent / "react-frontend"
     
@@ -356,28 +400,34 @@ def start_react_frontend():
         print("⚠️  React frontend not found, skipping...")
         return None
     
+    # Resolve npm path (on Windows, npm is a .cmd file and needs full path)
+    npm_path = shutil.which("npm")
+    if npm_path is None:
+        print("⚠️  npm not found in PATH, skipping React frontend...")
+        return None
+    
     # Check if node_modules exists
     if not (react_dir / "node_modules").exists():
         print("📦 Installing React dependencies...")
-        subprocess.run(["npm", "install"], cwd=str(react_dir), shell=True)
+        subprocess.run([npm_path, "install"], cwd=str(react_dir))  # ✅ SECURE: shell=True removed
     
     print("🎨 Starting React frontend on http://localhost:3000")
     
     # Start React dev server as a subprocess
     if sys.platform == "win32":
         process = subprocess.Popen(
-            ["npm", "start"],
+            [npm_path, "start"],
             cwd=str(react_dir),
-            shell=True,
+            # ✅ SECURE: shell=True removed to prevent shell injection
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
         )
     else:
         process = subprocess.Popen(
-            ["npm", "start"],
+            [npm_path, "start"],
             cwd=str(react_dir),
-            shell=True,
+            # ✅ SECURE: shell=True removed to prevent shell injection
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             preexec_fn=os.setsid

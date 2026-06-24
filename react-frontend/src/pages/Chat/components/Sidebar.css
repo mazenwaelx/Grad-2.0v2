@@ -296,20 +296,42 @@ body.light-mode .sidebar-footer {
   width: calc(100% - 30px);
   padding: 14px;
   margin: 0 15px;
-  background: rgba(255, 107, 107, 0.1);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  background: linear-gradient(135deg, #f5cb35 0%, #d4af37 100%);
+  border: 1px solid rgba(245, 203, 53, 0.5);
   border-radius: 12px;
-  color: #ff6b6b;
+  color: #0a0e27;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
   flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(245, 203, 53, 0.3);
 }
 
 .logout-btn:hover {
-  background: rgba(255, 107, 107, 0.2);
+  background: linear-gradient(135deg, #d4af37 0%, #b8932f 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 6px 25px rgba(245, 203, 53, 0.5);
+}
+
+.website-btn {
+  width: calc(100% - 30px);
+  padding: 14px;
+  margin: 0 15px;
+  background: linear-gradient(135deg, #f5cb35 0%, #d4af37 100%);
+  border: 1px solid rgba(245, 203, 53, 0.5);
+  border-radius: 12px;
+  color: #0a0e27;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(245, 203, 53, 0.3);
+}
+
+.website-btn:hover {
+  background: linear-gradient(135deg, #d4af37 0%, #b8932f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(245, 203, 53, 0.5);
 }
 
 @media (max-width: 768px) {

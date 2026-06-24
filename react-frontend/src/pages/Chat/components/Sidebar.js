@@ -8,8 +8,7 @@ const Sidebar = React.memo(({
   onNewChat,
   onSelectChat,
   onDeleteChat,
-  onRenameChat,
-  onLogout
+  onRenameChat
 }) => {
   const handleRename = (chatId, currentTitle, e) => {
     e.stopPropagation();
@@ -71,8 +70,11 @@ const Sidebar = React.memo(({
       </div>
 
       <div className="sidebar-footer">
-        <button className="logout-btn" onClick={onLogout}>
-          🚪 Logout
+        <button 
+          className="website-btn" 
+          onClick={() => window.location.href = 'http://localhost:3002'}
+        >
+          🏠 Back to Website
         </button>
       </div>
     </div>

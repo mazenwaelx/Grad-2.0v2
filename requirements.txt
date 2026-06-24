@@ -1,63 +1,185 @@
 # =====================================================
-# Core LangChain packages (compatible versions)
+# LawyerConnect - Egyptian Legal AI Platform
+# Complete Dependencies List
 # =====================================================
-langchain>=0.3.0,<0.4.0
-langchain-core>=0.3.0,<0.4.0
-langchain-community>=0.3.0,<0.4.0
-langchain-google-genai>=2.0.0,<3.0.0
-langchain-text-splitters>=0.3.0,<0.4.0
 
+# =====================================================
+# Core Framework
+# =====================================================
+fastapi==0.115.9
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+pydantic==2.12.3
+pydantic-settings==2.10.1
+starlette==0.45.3
+
+# =====================================================
+# LangChain Ecosystem
+# =====================================================
+langchain==0.3.25
+langchain-core==0.3.80
+langchain-community==0.3.25
+langchain-google-genai==2.0.4
+langchain-text-splitters==0.3.11
+langsmith==0.3.45
 
 # =====================================================
 # Google AI
 # =====================================================
-google-generativeai>=0.8.0,<1.0.0
+google-generativeai==0.8.5
+google-api-core==2.28.1
+google-auth==2.40.3
+googleapis-common-protos==1.70.0
 
 # =====================================================
-# Vector Store & Embeddings
+# Machine Learning & Embeddings
 # =====================================================
-faiss-cpu>=1.8.0,<2.0.0
-sentence-transformers>=3.0.0,<4.0.0
-
-# =====================================================
-# Web Framework (FastAPI)
-# =====================================================
-fastapi>=0.115.0,<1.0.0
-uvicorn[standard]>=0.32.0,<1.0.0
-python-multipart>=0.0.12,<1.0.0
-pydantic>=2.9.0,<3.0.0
-
+torch==2.11.0
+transformers==4.57.6
+sentence-transformers==4.1.0
+faiss-cpu==1.13.0
+huggingface-hub==0.35.0
+safetensors==0.4.5
+tokenizers==0.22.2
 
 # =====================================================
 # Database
 # =====================================================
-pyodbc>=5.1.0,<6.0.0
+pyodbc==5.3.0
+SQLAlchemy==2.0.43
+alembic==1.18.4
 
 # =====================================================
-# Environment & Utilities
+# Document Processing
 # =====================================================
-python-dotenv>=1.0.0,<2.0.0
-
-# =====================================================
-# File Processing Dependencies
-# =====================================================
-pdfplumber>=0.11.0,<1.0.0
-
-python-docx>=1.1.0,<2.0.0
-pandas>=2.2.0,<3.0.0
-openpyxl>=3.1.0,<4.0.0
+pdfplumber==0.11.8
+pypdf==6.4.0
+python-docx==1.2.0
+openpyxl==3.1.5
+pandas==2.3.2
 
 # =====================================================
 # OCR & Image Processing
 # =====================================================
-pytesseract>=0.3.10
-pdf2image>=1.17.0
-Pillow>=10.0.0
+pytesseract==0.3.10
+Pillow==12.1.1
+pdf2image==1.17.0
+pypdfium2==5.2.0
 
 # =====================================================
-# Core Dependencies (auto-installed but pinned for stability)
+# NLP & Text Processing
 # =====================================================
-numpy>=1.26.0,<2.0.0
-torch>=2.2.0,<3.0.0
-transformers>=4.45.0,<5.0.0
-huggingface-hub>=0.25.0,<1.0.0
+nltk==3.9.1
+regex==2024.7.24
+sentencepiece==0.2.1
+
+# =====================================================
+# Arabic Language Support
+# =====================================================
+arabic-reshaper==3.0.1
+python-bidi==0.6.10
+PyArabic==0.6.15
+
+# =====================================================
+# Scientific Computing
+# =====================================================
+numpy==2.2.6
+scipy==1.13.1
+scikit-learn==1.6.1
+joblib==1.5.2
+
+# =====================================================
+# HTTP & Networking
+# =====================================================
+requests==2.32.5
+httpx==0.28.1
+aiohttp==3.10.11
+urllib3==2.5.0
+certifi==2025.10.5
+
+# =====================================================
+# Security & Authentication
+# =====================================================
+python-jose==3.4.0
+passlib==1.7.4
+bcrypt==4.3.0
+cryptography==45.0.7
+PyJWT==2.10.1
+
+# =====================================================
+# Environment & Configuration
+# =====================================================
+python-dotenv==1.1.1
+python-dateutil==2.8.2
+pytz==2022.7.1
+
+# =====================================================
+# Testing & Evaluation
+# =====================================================
+deepchecks==0.19.1
+mlflow==3.14.0
+playwright==1.60.0
+pytest==9.0.3
+pytest-cov==7.1.0
+pytest-html==4.2.0
+
+# =====================================================
+# Data Visualization
+# =====================================================
+matplotlib==3.9.4
+seaborn==0.13.2
+plotly==6.3.1
+
+# =====================================================
+# Utilities
+# =====================================================
+click==8.2.1
+colorama==0.4.6
+tqdm==4.67.1
+packaging==26.0
+filelock==3.25.2
+beautifulsoup4==4.14.2
+lxml==6.0.2
+
+# =====================================================
+# Async Support
+# =====================================================
+anyio==4.10.0
+nest-asyncio==1.6.0
+aiofiles==25.1.0
+
+# =====================================================
+# JSON & Serialization
+# =====================================================
+orjson==3.11.3
+ujson==5.11.0
+jsonschema==4.25.1
+
+# =====================================================
+# Monitoring & Logging
+# =====================================================
+structlog==25.4.0
+coloredlogs==15.0.1
+
+# =====================================================
+# Optional: Streamlit UI
+# =====================================================
+streamlit==1.51.0
+
+# =====================================================
+# Installation Notes
+# =====================================================
+# Basic installation:
+#   pip install -r requirements-clean.txt
+#
+# For GPU support with CUDA 12.6:
+#   pip install torch==2.11.0+cu126 --index-url https://download.pytorch.org/whl/cu126
+#
+# For production deployment:
+#   pip install gunicorn
+#   gunicorn -w 4 -k uvicorn.workers.UvicornWorker api_server:app
+#
+# Troubleshooting:
+#   - If Tesseract fails, install from: https://github.com/UB-Mannheim/tesseract/wiki
+#   - If pyodbc fails, install ODBC Driver 17 for SQL Server
+#   - For pdf2image, install Poppler: https://github.com/oschwartz10612/poppler-windows/releases/

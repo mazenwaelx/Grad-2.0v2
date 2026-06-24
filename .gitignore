@@ -1,2 +1,31 @@
+# IDE
 /.vscode
+
+# Virtual Environment
 /grad_proj_env
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.deepeval/
+*.pyc
+__pycache__/
+
+# Node
+node_modules/
+.npm
+
+# Build
+*.log
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+*.db
+
+# OS
+.DS_Store
+Thumbs.db

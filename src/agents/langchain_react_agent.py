@@ -10,6 +10,7 @@ from langchain_core.callbacks import BaseCallbackHandler
 import time
 import re
 import hashlib
+from difflib import SequenceMatcher
 
 # Global response cache (persists across sessions)
 RESPONSE_CACHE: Dict[str, str] = {}
@@ -270,10 +271,47 @@ def normalize_question(question: str) -> str:
 def get_cache_key(question: str) -> str:
     """Generate a cache key from normalized question"""
     normalized = normalize_question(question)
-    return hashlib.md5(normalized.encode('utf-8')).hexdigest()
+    return hashlib.md5(normalized.encode('utf-8'), usedforsecurity=False).hexdigest()  # ✅ SECURE: marked as not for security
+
+def fuzzy_match_greeting(text: str, known_greetings: List[str], threshold: float = 0.75) -> bool:
+    """
+    Fuzzy match text against known greetings to handle typos
+    Uses similarity scoring - returns True if similarity >= threshold
+    
+    Args:
+        text: Input text to check
+        known_greetings: List of known greeting phrases
+        threshold: Minimum similarity score (0-1) to consider a match
+    
+    Returns:
+        True if text is similar enough to any known greeting
+    """
+    text_clean = text.strip().lower()
+    
+    # Remove common punctuation
+    text_clean = re.sub(r'[!.,?،؟\s]+$', '', text_clean)
+    
+    for greeting in known_greetings:
+        greeting_clean = greeting.strip().lower()
+        
+        # Calculate similarity ratio
+        similarity = SequenceMatcher(None, text_clean, greeting_clean).ratio()
+        
+        if similarity >= threshold:
+            return True
+        
+        # Also check if text is contained in greeting or vice versa (for partial matches)
+        if len(text_clean) >= 3:  # Only for text with 3+ chars
+            if text_clean in greeting_clean or greeting_clean in text_clean:
+                # Additional check: must have at least 60% overlap
+                overlap = min(len(text_clean), len(greeting_clean)) / max(len(text_clean), len(greeting_clean))
+                if overlap >= 0.6:
+                    return True
+    
+    return False
 
 def is_greeting(text: str) -> bool:
-    """Check if the text is a greeting"""
+    """Check if the text is a greeting - with typo tolerance via fuzzy matching"""
     text = text.strip()
     text_lower = text.lower()
     
@@ -281,37 +319,52 @@ def is_greeting(text: str) -> bool:
     normalized = re.sub(r'\s+', ' ', text)  # Normalize spaces
     normalized_no_space = re.sub(r'\s+', '', text)  # Remove all spaces for comparison
     
-    # Special check for "السلام عليكم" / "سلام عليكم" (most common) - check first
-    salam_patterns = [
-        r'^السلام عليكم',
-        r'^سلام عليكم',
-        r'^السلام عليكم ورحمة الله',
-        r'^وعليكم السلام',
-        r'^وعليكم السلام ورحمة الله'
+    # Known greetings for fuzzy matching
+    KNOWN_ARABIC_GREETINGS = [
+        'أهلا', 'اهلا', 'مرحبا', 'مرحباً', 'هلا', 'اهلين', 'أهلين',
+        'أهلا وسهلا', 'اهلا وسهلا', 'مرحبا بك', 'يا هلا',
+        'السلام عليكم', 'سلام عليكم', 'سلام', 'صباح الخير', 'مساء الخير',
+        'صباح النور', 'مساء النور', 'تحياتي', 'السلام', 'هلو', 'الو'
     ]
-    for pattern in salam_patterns:
-        if re.match(pattern, text):
-            return True
     
-    # Special check for "أهلا وسهلا" variations (common greeting)
-    ahlan_patterns = [
-        r'^(ا|أ)هلا\s*(و|)\s*سهلا$',
-        r'^(ا|أ)هلا$',
-        r'^مرحبا$',
+    KNOWN_ENGLISH_GREETINGS = [
+        'hi', 'hello', 'hey', 'good morning', 'good evening', 
+        'greetings', 'howdy', 'hi there', 'hello there'
     ]
-    for pattern in ahlan_patterns:
-        if re.match(pattern, normalized, re.IGNORECASE):
-            return True
     
     # If it contains question-related keywords, it's not a greeting
+    # Use word boundaries to prevent false matches (e.g., "هل" shouldn't match in "اهلا")
     for keyword in NOT_GREETING_KEYWORDS:
-        if keyword in text_lower:
+        # Check if keyword appears as a separate word (with spaces or at boundaries)
+        if re.search(r'\b' + re.escape(keyword) + r'\b', text_lower):
             return False
     
-    # Check against greeting patterns
+    # First: Try exact regex patterns (fast path)
     for pattern in GREETING_PATTERNS:
         if re.match(pattern, text, re.IGNORECASE):
             return True
+    
+    # Second: Try fuzzy matching for typos (with high threshold for accuracy)
+    # Use 0.75 threshold - allows ~25% character differences
+    if fuzzy_match_greeting(text, KNOWN_ARABIC_GREETINGS, threshold=0.75):
+        return True
+    
+    if fuzzy_match_greeting(text, KNOWN_ENGLISH_GREETINGS, threshold=0.75):
+        return True
+    
+    # Third: Special patterns for common Arabic greeting typos
+    # This catches more creative typos like احهلا, اهلاا, مرحببا
+    typo_patterns = [
+        r'^(ا|أ|إ|آ)+(ح|ه|خ|)*هلا+(ا|أ|)*$',  # أهلا variations with extra chars
+        r'^مرح(ب|پ|ت)+(ا|و|)*$',                  # مرحبا with typing errors
+        r'^(ه|ح|خ)لا+(و|)*$',                      # هلا variations
+        r'^(س|ص)لام+(ع|)*$',                       # سلام variations
+    ]
+    
+    for pattern in typo_patterns:
+        if re.match(pattern, normalized, re.IGNORECASE):
+            return True
+    
     return False
 
 def get_greeting_response(text: str) -> str:
@@ -429,18 +482,28 @@ class LangChainReActAgent:
             if count > max_repeats:
                 return True
         
+        # Strategy 3: Check for repeated 5-word phrases (LLM looping/degeneration)
+        words = text.split()
+        if len(words) > 30:
+            phrases = [" ".join(words[i:i+5]) for i in range(len(words) - 4)]
+            from collections import Counter
+            phrase_counts = Counter(phrases)
+            most_common_phrase, count = phrase_counts.most_common(1)[0]
+            if count >= 3:
+                return True
+        
         return False
 
     @staticmethod
     def _clean_repetitive_text(text: str) -> str:
-        """Remove repeated lines/blocks from LLM output, keeping only unique content."""
+        """Remove repeated lines/blocks and duplicate sentences from LLM output, keeping only unique content."""
         if not text:
             return text
         
+        # 1. Clean at line level first
         lines = text.split('\n')
         seen_lines = set()
         cleaned_lines = []
-        repeat_count = 0
         
         for line in lines:
             stripped = line.strip()
@@ -450,16 +513,52 @@ class LangChainReActAgent:
                 continue
             
             if stripped in seen_lines:
-                repeat_count += 1
-                if repeat_count <= 2:  # Allow up to 2 repeats (some are legitimate)
-                    cleaned_lines.append(line)
-                # Skip all further repeats silently
+                # Skip duplicate lines
+                continue
             else:
                 seen_lines.add(stripped)
-                repeat_count = 0
                 cleaned_lines.append(line)
         
-        return '\n'.join(cleaned_lines).strip()
+        cleaned_text = '\n'.join(cleaned_lines).strip()
+        
+        # 2. Clean at sentence level within paragraphs
+        paragraphs = cleaned_text.split('\n')
+        cleaned_paragraphs = []
+        
+        for para in paragraphs:
+            stripped_para = para.strip()
+            if not stripped_para or len(stripped_para) < 20:
+                cleaned_paragraphs.append(para)
+                continue
+            
+            # Split by Arabic/English sentence boundaries, keeping delimiters
+            sentences = re.split(r'([\.؟\?\!]\s+)', para)
+            
+            # Reconstruct sentences with their punctuation
+            reconstructed_sentences = []
+            i = 0
+            while i < len(sentences):
+                s = sentences[i].strip()
+                punc = ""
+                if i + 1 < len(sentences):
+                    punc = sentences[i+1]
+                
+                if s:
+                    reconstructed_sentences.append((s, punc))
+                i += 2
+            
+            seen_sentences = set()
+            unique_sentences = []
+            for s, punc in reconstructed_sentences:
+                # Normalize sentence for comparison (remove spaces/punctuation)
+                norm = re.sub(r'[\s\.؟\?\!]+', '', s)
+                if norm not in seen_sentences:
+                    seen_sentences.add(norm)
+                    unique_sentences.append(s + punc)
+            
+            cleaned_paragraphs.append("".join(unique_sentences))
+            
+        return '\n'.join(cleaned_paragraphs).strip()
 
     @staticmethod
     def _handle_parsing_error(error):
@@ -471,42 +570,36 @@ class LangChainReActAgent:
         """
         error_str = str(error)
         
-        # Case 1: Output contains "Final Answer:" — extract it
-        if "Final Answer:" in error_str:
-            try:
-                final_answer_match = error_str.split("Final Answer:")[-1]
-                if "For troubleshooting" in final_answer_match:
-                    final_answer_match = final_answer_match.split("For troubleshooting")[0]
-                answer = final_answer_match.strip()
-                if len(answer) > 50:
-                    # Clean repetition before returning
-                    answer = LangChainReActAgent._clean_repetitive_text(answer)
-                    return answer
-            except Exception:
-                pass
-        
-        # Case 2: LLM forgot "Final Answer:" but generated a valid response
-        # Extract the actual content from "Could not parse LLM output: `...`"
+        # 1. Extract raw LLM output from error string (if enclosed in backticks)
+        raw = error_str
         if "Could not parse LLM output:" in error_str:
             try:
-                # Extract content between backticks
                 raw = error_str.split("Could not parse LLM output: `", 1)[-1]
-                # Remove trailing backtick and troubleshooting link
                 if "For troubleshooting" in raw:
                     raw = raw.split("For troubleshooting")[0]
                 raw = raw.rstrip("`").strip()
-                # If it's a substantial response (not just a tool call attempt), return it
-                if len(raw) > 100 and not raw.startswith("Action:"):
-                    # Clean repetitive content before accepting
-                    raw = LangChainReActAgent._clean_repetitive_text(raw)
-                    # After cleaning, check if there's still meaningful content
-                    if len(raw) > 50:
-                        print(f"[INFO] Recovered {len(raw)} chars from unparsed LLM output")
-                        return raw
-                    else:
-                        print(f"[WARNING] Recovered text was mostly repetition, discarding")
             except Exception:
-                pass
+                raw = error_str
+                
+        # 2. Check for "Final Answer" variations or Arabic equivalents in raw output
+        # Pattern detects 'Final Answer', 'الإجابة النهائية', 'الجواب النهائي' (case-insensitive)
+        # followed by optional punctuation/spaces/equals/dashes, and extracts everything after it.
+        pattern = r'(?:Final\s*Answer|الإجابة\s*النهائية|الجواب\s*النهائي)[\s\:\-\—\=]*(.*)'
+        match = re.search(pattern, raw, re.IGNORECASE | re.DOTALL)
+        
+        if match:
+            answer = match.group(1).strip()
+            if len(answer) > 50:
+                answer = LangChainReActAgent._clean_repetitive_text(answer)
+                return answer
+                
+        # 3. Fallback: if "Final Answer" was not found but the raw text is a substantial
+        # response (not attempting to call a tool), return the cleaned raw content.
+        if len(raw) > 100 and not raw.startswith("Action:"):
+            cleaned_raw = LangChainReActAgent._clean_repetitive_text(raw)
+            if len(cleaned_raw) > 50:
+                print(f"[INFO] Recovered {len(cleaned_raw)} chars from unparsed LLM output (fallback)")
+                return cleaned_raw
         
         return "عذراً، حدث خطأ في معالجة الإجابة. يرجى إعادة صياغة السؤال."
 
@@ -516,7 +609,7 @@ class LangChainReActAgent:
         tools: List[Tool],
         history_store,
         log_callback: Optional[Callable[[str], None]] = None,
-        max_iterations: int = 4,  # Reduced to minimize API calls and avoid rate limits
+        max_iterations: int = 10,  # Increased to give more iterations before timeout
         verbose: bool = True,
         enable_performance_monitoring: bool = True,
     ):
@@ -573,7 +666,7 @@ class LangChainReActAgent:
             handle_parsing_errors=self._handle_parsing_error,
             return_intermediate_steps=True,
             callbacks=callbacks,
-            max_execution_time=180,  # 3 minute timeout (allows for rate limit retries)
+            max_execution_time=120,  # 2 minute timeout
         )
         
         self.log_callback("🚀 Advanced LangChain ReAct Agent initialized with Gemini 2.0 Flash Lite")
@@ -991,8 +1084,40 @@ def build_langchain_tools(retriever, history_store, file_processor=None) -> List
         
         return f"{' — '.join(metadata_parts)}\n{snippet}"
 
+    def expand_query_by_domain(query: str) -> List[str]:
+        """Apply domain-specific query expansion rules for Egyptian Labor Law"""
+        variants = [query]
+        query_lower = query.lower()
+        
+        # 1. Unfair dismissal (فصل تعسفي -> إنهاء لسبب غير مشروع)
+        if "تعسف" in query_lower:
+            variants.append("إنهاء لسبب غير مشروع")
+            variants.append("إنهاء لسبب غير مشروع تعويض")
+            variants.append("أجر شهرين عن كل سنة")
+            variants.append("المادة 165")
+            
+        # 2. Child labor minimum age (الحد الأدنى لسن -> يحظر تشغيل الأطفال)
+        if "الحد الأدنى" in query_lower and "سن" in query_lower:
+            variants.append("يحظر تشغيل الأطفال قبل")
+            variants.append("سن خمس عشرة سنة أطفال")
+            variants.append("المادة 64")
+            
+        # 3. Child labor maximum hours (الحد الأقصى لساعات -> ساعات عمل الطفل)
+        if "الحد الأقصى" in query_lower and "ساعات" in query_lower:
+            variants.append("يحظر تشغيل الطفل أكثر من ست ساعات")
+            variants.append("ساعات عمل الطفل يوميا")
+            variants.append("المادة 65")
+            
+        # 4. Maternity leave (إجازة وضع -> أربعة أشهر وضع)
+        if "إجازة" in query_lower and ("وضع" in query_lower or "أمومة" in query_lower or "حامل" in query_lower):
+            variants.append("أربعة أشهر وضع")
+            variants.append("إجازة العاملة الحامل")
+            variants.append("المادة 54")
+            
+        return list(dict.fromkeys(variants))
+
     def law_lookup(question: str) -> str:
-        """Retrieve relevant documents for the question using dynamic retrieval with query expansion for compound questions"""
+        """Retrieve relevant documents for the question using dynamic retrieval with query expansion"""
         try:
             # Check if this is a compound question
             sub_queries = detect_compound_question(question)
@@ -1006,36 +1131,14 @@ def build_langchain_tools(retriever, history_store, file_processor=None) -> List
                 
                 for sub_query in sub_queries:
                     print(f"[INFO] Processing sub-query: {sub_query}")
-                    
-                    # Query expansion: add alternative phrasings based on legal domain knowledge
-                    expanded_queries = [sub_query]
-                    
-                    # Expansion rules for common legal concepts
-                    if "الحد الأدنى" in sub_query and "سن" in sub_query:
-                        # Minimum age queries - legal texts use "يحظر" (prohibits) instead of "الحد الأدنى" (minimum)
-                        expanded_queries.append(sub_query.replace("الحد الأدنى لسن", "يحظر تشغيل الأطفال قبل"))
-                        expanded_queries.append(sub_query.replace("الحد الأدنى لسن", "سن"))
-                        expanded_queries.append("تشغيل الأطفال قبل بلوغهم")
-                        expanded_queries.append("خمس عشرة سنة أطفال")
-                        print(f"[INFO] Query expansion for minimum age: {len(expanded_queries)} variants")
-                    
-                    if "الحد الأقصى" in sub_query and "ساعات" in sub_query:
-                        # Maximum hours queries
-                        expanded_queries.append(sub_query.replace("الحد الأقصى", "يحظر تشغيل"))
-                        expanded_queries.append("ست ساعات يوميا طفل")
-                        expanded_queries.append("ساعات عمل الطفل يوميا")
-                        print(f"[INFO] Query expansion for maximum hours: {len(expanded_queries)} variants")
-                    
-                    if "إجازة" in sub_query and ("وضع" in sub_query or "أمومة" in sub_query):
-                        # Maternity leave queries
-                        expanded_queries.append("أربعة أشهر وضع")
-                        expanded_queries.append("إجازة العاملة الحامل")
-                        print(f"[INFO] Query expansion for maternity leave: {len(expanded_queries)} variants")
+                    expanded_queries = expand_query_by_domain(sub_query)
                     
                     # Retrieve documents for all query variants
                     for query_variant in expanded_queries:
                         try:
-                            docs = retriever.invoke(query_variant)
+                            # Retrieve 15 documents to account for duplicate chunks in vector store
+                            temp_retriever = retriever.vectorstore.as_retriever(search_kwargs={"k": 15})
+                            docs = temp_retriever.invoke(query_variant)
                             
                             # Add unique documents
                             for doc in docs:
@@ -1080,21 +1183,43 @@ def build_langchain_tools(retriever, history_store, file_processor=None) -> List
                 
                 return "\n".join(results)
             
-            # Single question - use regular dynamic retrieval
+            # Single question - use regular dynamic retrieval with query expansion
             from src.retrieval.dynamic_retrieval import get_dynamic_k
             
             # Get optimal number of documents for this question
             optimal_k = get_dynamic_k(question)
             
-            # Create a temporary retriever with dynamic k
-            dynamic_retriever = retriever.vectorstore.as_retriever(search_kwargs={"k": optimal_k})
-            docs = dynamic_retriever.invoke(question)
+            # Expand the single query
+            expanded_queries = expand_query_by_domain(question)
             
-            if not docs:
+            # Retrieve documents for all query variants
+            all_docs = []
+            seen_content = set()
+            for q_var in expanded_queries:
+                # Retrieve 15 documents to account for duplicate chunks in vector store
+                temp_retriever = retriever.vectorstore.as_retriever(search_kwargs={"k": 15})
+                try:
+                    docs = temp_retriever.invoke(q_var)
+                    all_docs.extend(docs)
+                except Exception as e:
+                    print(f"[WARNING] Failed to retrieve for variant '{q_var[:50]}...': {e}")
+            
+            if not all_docs:
                 return "لم يتم العثور على مواد مرتبطة بالسؤال المطروح."
             
-            print(f"[SUCCESS] law_lookup retrieved {len(docs)} docs (dynamic: {optimal_k} requested)")
-            return "\n\n".join(_format_doc(doc, idx + 1) for idx, doc in enumerate(docs))
+            # Deduplicate documents based on content
+            unique_docs = []
+            for doc in all_docs:
+                # Normalize spaces/punctuation to identify identical text chunks
+                norm_content = re.sub(r'[\s\.؟\?\!]+', '', doc.page_content[:200])
+                if norm_content not in seen_content:
+                    seen_content.add(norm_content)
+                    unique_docs.append(doc)
+                    if len(unique_docs) == optimal_k:
+                        break
+            
+            print(f"[SUCCESS] law_lookup retrieved {len(all_docs)} docs, deduplicated to {len(unique_docs)} unique docs (dynamic optimal: {optimal_k})")
+            return "\n\n".join(_format_doc(doc, idx + 1) for idx, doc in enumerate(unique_docs))
             
         except Exception as e:
             print(f"[ERROR] law_lookup failed: {e}")
@@ -1117,15 +1242,26 @@ def build_langchain_tools(retriever, history_store, file_processor=None) -> List
             # Get optimal number of documents (but limit to 4 for references)
             optimal_k = min(get_dynamic_k(question), 4)  # References don't need as many docs
             
-            # Create a temporary retriever with dynamic k
-            dynamic_retriever = retriever.vectorstore.as_retriever(search_kwargs={"k": optimal_k})
+            # Retrieve 15 documents to account for duplicate chunks in vector store
+            dynamic_retriever = retriever.vectorstore.as_retriever(search_kwargs={"k": 15})
             docs = dynamic_retriever.invoke(question)
             
             if not docs:
                 return "لا توجد مراجع متاحة لهذا السؤال."
             
-            references = []
+            # Deduplicate documents based on content
+            unique_docs = []
+            seen_content = set()
             for doc in docs:
+                norm_content = re.sub(r'[\s\.؟\?\!]+', '', doc.page_content[:200])
+                if norm_content not in seen_content:
+                    seen_content.add(norm_content)
+                    unique_docs.append(doc)
+                    if len(unique_docs) == optimal_k:
+                        break
+            
+            references = []
+            for doc in unique_docs:
                 article_number = doc.metadata.get("article_number", doc.metadata.get("article", "غير محددة"))
                 book = doc.metadata.get("book", "")
                 chapter = doc.metadata.get("chapter", "")

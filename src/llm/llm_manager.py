@@ -16,11 +16,9 @@ def init_llm(model_name: str):
     # Try different model name formats (using available models)
     model_variants = [
         model_name,
-        "models/gemini-2.0-flash-lite",
-        "models/gemini-2.0-flash-lite-001",
-        "models/gemini-2.0-flash",
+        "models/gemini-2.5-flash",
         "models/gemini-2.0-flash-001",
-        "models/gemini-flash-latest"
+        "models/gemini-flash-latest",
     ]
     
     for i, model_variant in enumerate(model_variants):

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ThemeToggle from '../../components/ThemeToggle';
 import Sidebar from './components/Sidebar';
@@ -10,8 +10,8 @@ import * as api from '../../services/api';
 import './Chat.css';
 
 const Chat = () => {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const [searchParams] = useSearchParams();
   
   const [chats, setChats] = useState([]);
   const [currentChatId, setCurrentChatId] = useState(null);
@@ -85,17 +85,47 @@ const Chat = () => {
     }
   }, [getFilesForMessage]);
 
-  // Load user chats on mount
   useEffect(() => {
+    // Don't load chats until we have a current user
+    if (!currentUser || !currentUser.email) {
+      console.log('Waiting for user authentication...');
+      return;
+    }
+
     const loadUserChats = async () => {
       try {
+        console.log('Loading chats for user:', currentUser.email);
         const data = await api.getChats(currentUser.email);
         const loadedChats = data.chats || [];
         setChats(loadedChats);
         
-        if (loadedChats.length === 0) {
+        // Check if chatId is in URL params (coming from website modal)
+        const urlChatId = searchParams.get('chatId');
+        
+        if (urlChatId) {
+          console.log('Loading chat from URL:', urlChatId);
+          // Use the chat ID from URL
+          const existingChat = loadedChats.find(c => c.chat_id === urlChatId);
+          if (existingChat) {
+            loadChat(urlChatId);
+          } else {
+            // Create new chat with this ID
+            const newChat = {
+              chat_id: urlChatId,
+              user_email: currentUser.email,
+              title: 'New Chat',
+              messages: [],
+              created_at: new Date().toISOString()
+            };
+            setChats(prev => [newChat, ...prev]);
+            setCurrentChatId(urlChatId);
+            setMessages([]);
+          }
+        } else if (loadedChats.length === 0) {
+          console.log('No chats found, creating new chat');
           createNewChat();
         } else {
+          console.log('Loading most recent chat');
           loadChat(loadedChats[0].chat_id);
         }
       } catch (error) {
@@ -107,7 +137,7 @@ const Chat = () => {
 
     loadUserChats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser.email]);
+  }, [currentUser?.email, searchParams]);
 
   const storeFilesWithMessage = (chatId, messageIndex, files) => {
     setMessageFiles(prev => ({
@@ -118,11 +148,6 @@ const Chat = () => {
       }
     }));
   };
-
-  const handleLogout = useCallback(() => {
-    logout();
-    navigate('/login');
-  }, [logout, navigate]);
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim() || isTyping) return;
@@ -322,7 +347,6 @@ const Chat = () => {
         onSelectChat={loadChat}
         onDeleteChat={deleteChat}
         onRenameChat={renameChat}
-        onLogout={handleLogout}
       />
       
       <div className="main-chat">

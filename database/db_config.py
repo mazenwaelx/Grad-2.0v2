@@ -1,7 +1,5 @@
 """
-Smart database configuration - tries SQL Server first, falls back to SQLite.
-Uses a simple connection pool so connections are reused instead of recreated
-on every query.
+Smart database configuration - Uses LawyerConnectDB (same as website)
 """
 import os
 import queue
@@ -11,12 +9,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ---------------------------------------------------------------------------
-# Configuration
+# Configuration - NOW USING LAWYERCONNECT DATABASE
 # ---------------------------------------------------------------------------
 USE_SQLITE = None          # Determined on first connection attempt
 DB_PATH = 'database/labour_law.db'
-DB_SERVER = os.getenv('DB_SERVER', '(local)\\SQLEXPRESS')
-DB_NAME = 'Labour_law_db'
+DB_SERVER = os.getenv('DB_SERVER', '.\\SQLEXPRESS')  # Match website
+DB_NAME = 'LawyerConnectDB'  # CHANGED: Use same database as website
 DB_DRIVER = '{ODBC Driver 17 for SQL Server}'
 WORKING_CONN_STR = None
 
@@ -154,7 +152,7 @@ def get_db_connection():
 
 
 def init_database():
-    """Initialize database tables if they don't exist."""
+    """Initialize AI chat tables in LawyerConnectDB (website database)."""
     _detect_database()
 
     connection = get_db_connection()
@@ -166,102 +164,81 @@ def init_database():
         cursor = connection.cursor()
 
         if USE_SQLITE:
+            # SQLite tables (for fallback only)
             cursor.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    email TEXT UNIQUE NOT NULL,
-                    name TEXT NOT NULL,
-                    password TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS chats (
+                CREATE TABLE IF NOT EXISTS ai_chats (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     chat_id TEXT UNIQUE NOT NULL,
-                    user_email TEXT NOT NULL,
+                    user_id INTEGER NOT NULL,
                     title TEXT DEFAULT 'New Chat',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
 
             cursor.execute("""
-                CREATE TABLE IF NOT EXISTS messages (
+                CREATE TABLE IF NOT EXISTS ai_messages (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     chat_id TEXT NOT NULL,
                     role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
                     content TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (chat_id) REFERENCES chats(chat_id) ON DELETE CASCADE
+                    FOREIGN KEY (chat_id) REFERENCES ai_chats(chat_id) ON DELETE CASCADE
                 )
             """)
 
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_chats_user_email ON chats(user_email)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_messages_chat_id ON messages(chat_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_ai_chats_user_id ON ai_chats(user_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_ai_messages_chat_id ON ai_messages(chat_id)")
 
         else:
+            # SQL Server tables - integrate with LawyerConnectDB
+            # Check if ai_chats table exists
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
-                CREATE TABLE users (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    email NVARCHAR(255) UNIQUE NOT NULL,
-                    name NVARCHAR(255) NOT NULL,
-                    password NVARCHAR(255) NOT NULL,
-                    created_at DATETIME DEFAULT GETDATE()
-                )
-            """)
-
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='chats' AND xtype='U')
-                CREATE TABLE chats (
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name='ai_chats')
+                CREATE TABLE ai_chats (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     chat_id NVARCHAR(255) UNIQUE NOT NULL,
-                    user_email NVARCHAR(255) NOT NULL,
+                    user_id INT NOT NULL,
                     title NVARCHAR(500) DEFAULT 'New Chat',
                     created_at DATETIME DEFAULT GETDATE(),
                     updated_at DATETIME DEFAULT GETDATE(),
-                    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
+                    FOREIGN KEY (user_id) REFERENCES Users(Id) ON DELETE CASCADE
                 )
             """)
 
+            # Check if ai_messages table exists
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='messages' AND xtype='U')
-                CREATE TABLE messages (
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name='ai_messages')
+                CREATE TABLE ai_messages (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     chat_id NVARCHAR(255) NOT NULL,
                     role NVARCHAR(20) NOT NULL CHECK (role IN ('user', 'assistant')),
                     content NVARCHAR(MAX) NOT NULL,
                     created_at DATETIME DEFAULT GETDATE(),
-                    FOREIGN KEY (chat_id) REFERENCES chats(chat_id) ON DELETE CASCADE
+                    FOREIGN KEY (chat_id) REFERENCES ai_chats(chat_id) ON DELETE CASCADE
                 )
             """)
 
+            # Create indexes
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='idx_users_email')
-                CREATE INDEX idx_users_email ON users(email)
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='idx_ai_chats_user_id')
+                CREATE INDEX idx_ai_chats_user_id ON ai_chats(user_id)
             """)
 
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='idx_chats_user_email')
-                CREATE INDEX idx_chats_user_email ON chats(user_email)
-            """)
-
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='idx_messages_chat_id')
-                CREATE INDEX idx_messages_chat_id ON messages(chat_id)
+                IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name='idx_ai_messages_chat_id')
+                CREATE INDEX idx_ai_messages_chat_id ON ai_messages(chat_id)
             """)
 
         connection.commit()
-        db_type = "SQLite" if USE_SQLITE else "SQL Server"
-        print(f"[SUCCESS] {db_type} database tables initialized")
+        db_type = "SQLite" if USE_SQLITE else "SQL Server (LawyerConnectDB)"
+        print(f"[SUCCESS] {db_type} AI chat tables initialized")
         return True
 
     except Exception as e:
         print(f"[ERROR] Failed to initialize database: {e}")
+        import traceback
+        traceback.print_exc()
         return False
     finally:
         cursor.close()

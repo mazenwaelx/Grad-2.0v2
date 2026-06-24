@@ -101,7 +101,7 @@ class FileProcessor:
     
     def get_file_hash(self, file_content: bytes) -> str:
         """Generate a unique hash for file content"""
-        return hashlib.md5(file_content).hexdigest()
+        return hashlib.md5(file_content, usedforsecurity=False).hexdigest()  # ✅ SECURE: marked as not for security
     
     def is_supported_file(self, filename: str) -> bool:
         """Check if the file type is supported"""
