@@ -1,0 +1,60 @@
+{
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "elapsed_seconds": 0.0,
+    "timestamp": "2026-06-25T01:16:45.616046",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "Mock LLM Response",
+      "status": "passed",
+      "details": "Mock LLM responded correctly",
+      "duration_ms": 1
+    },
+    {
+      "name": "Mock Database Operations",
+      "status": "passed",
+      "details": "Mock database operations working",
+      "duration_ms": 0
+    },
+    {
+      "name": "Mock Retriever",
+      "status": "passed",
+      "details": "Retrieved 3 mock documents",
+      "duration_ms": 0
+    },
+    {
+      "name": "Mock File Processor",
+      "status": "passed",
+      "details": "Mock file processor working",
+      "duration_ms": 1
+    },
+    {
+      "name": "Mock API Endpoints",
+      "status": "passed",
+      "details": "Mock API endpoints working",
+      "duration_ms": 1
+    },
+    {
+      "name": "Mock Embeddings",
+      "status": "passed",
+      "details": "Mock embeddings working correctly",
+      "duration_ms": 0
+    },
+    {
+      "name": "Mock Agent Tools",
+      "status": "passed",
+      "details": "Mock agent tools working",
+      "duration_ms": 0
+    },
+    {
+      "name": "Mock Chat History",
+      "status": "passed",
+      "details": "Mock chat history working",
+      "duration_ms": 0
+    }
+  ]
+}

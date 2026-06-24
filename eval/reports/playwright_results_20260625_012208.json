@@ -1,0 +1,104 @@
+{
+  "summary": {
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate": 100.0,
+    "elapsed_seconds": 103.06,
+    "timestamp": "2026-06-25T01:22:08.281333"
+  },
+  "results": [
+    {
+      "name": "API Health Check",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 342,
+      "screenshots": []
+    },
+    {
+      "name": "Login Page Load",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 3156,
+      "screenshots": []
+    },
+    {
+      "name": "Signup Flow",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 217,
+      "screenshots": []
+    },
+    {
+      "name": "Login Flow",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 220,
+      "screenshots": []
+    },
+    {
+      "name": "Invalid Login Rejection",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 1,
+      "screenshots": []
+    },
+    {
+      "name": "File Upload API",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 9,
+      "screenshots": []
+    },
+    {
+      "name": "Files List API",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 6,
+      "screenshots": []
+    },
+    {
+      "name": "API Docs Accessible",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 6047,
+      "screenshots": []
+    },
+    {
+      "name": "Frontend Responsive Design",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 4408,
+      "screenshots": []
+    },
+    {
+      "name": "AI Legal Accuracy (4 questions)",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 54868,
+      "screenshots": []
+    },
+    {
+      "name": "AI Out-of-Scope Rejection",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 1770,
+      "screenshots": []
+    },
+    {
+      "name": "AI Response Consistency",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 20601,
+      "screenshots": []
+    },
+    {
+      "name": "AI Arabic Language Quality",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 6542,
+      "screenshots": []
+    }
+  ]
+}

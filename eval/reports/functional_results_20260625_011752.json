@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 13.12,
+    "timestamp": "2026-06-25T01:17:52.814472",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "User Registration Function",
+      "status": "passed",
+      "details": "User registration functional",
+      "duration_ms": 210
+    },
+    {
+      "name": "User Authentication Function",
+      "status": "passed",
+      "details": "Authentication validates correctly",
+      "duration_ms": 1130
+    },
+    {
+      "name": "Chat Creation Function",
+      "status": "passed",
+      "details": "Chat creation functional",
+      "duration_ms": 217
+    },
+    {
+      "name": "Message Storage Function",
+      "status": "passed",
+      "details": "Stored and retrieved 2 messages",
+      "duration_ms": 8
+    },
+    {
+      "name": "Search Retrieval Function",
+      "status": "passed",
+      "details": "Retrieved 6 relevant documents",
+      "duration_ms": 2428
+    },
+    {
+      "name": "Response Generation Function",
+      "status": "passed",
+      "details": "Generated 649 char response",
+      "duration_ms": 8900
+    },
+    {
+      "name": "Chat History Function",
+      "status": "passed",
+      "details": "Chat history maintains conversation",
+      "duration_ms": 222
+    }
+  ]
+}

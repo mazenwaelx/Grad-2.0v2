@@ -1,0 +1,377 @@
+{
+  "summary": {
+    "timestamp": "2026-06-25T01:28:30.086445",
+    "mode": "live",
+    "total_tests": 15,
+    "evaluated": 15,
+    "skipped": 0,
+    "passed": 15,
+    "failed": 0,
+    "pass_rate": 100.0,
+    "average_score": 0.957,
+    "difficulty_breakdown": {
+      "simple": {
+        "count": 5,
+        "avg_score": 0.912,
+        "passed": 5
+      },
+      "medium": {
+        "count": 6,
+        "avg_score": 0.983,
+        "passed": 6
+      },
+      "complex": {
+        "count": 4,
+        "avg_score": 0.975,
+        "passed": 4
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "Q01",
+      "question": "ما هي مدة الإجازة السنوية للعامل؟",
+      "difficulty": "simple",
+      "expected_topic": "الإجازات",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.3333333333333333,
+        "coverage": 1.0
+      },
+      "latency_seconds": 3.49,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q02",
+      "question": "ما هي حقوق المرأة العاملة في قانون العمل المصري؟",
+      "difficulty": "medium",
+      "expected_topic": "حقوق المرأة العاملة",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 5.64,
+      "source": "live",
+      "keyword_coverage": 0.6666666666666666,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 0.9,
+      "passed": true
+    },
+    {
+      "id": "Q03",
+      "question": "ما هو الحد الأدنى للأجور؟",
+      "difficulty": "simple",
+      "expected_topic": "الأجور",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 0.13,
+      "source": "live",
+      "keyword_coverage": 0.0,
+      "response_quality": {
+        "completeness": 0.8,
+        "structure": 0.6666666666666666,
+        "legal_references": 0.5,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 0.56,
+      "passed": true
+    },
+    {
+      "id": "Q04",
+      "question": "ما هي إجراءات الفصل التعسفي؟",
+      "difficulty": "complex",
+      "expected_topic": "إنهاء علاقة العمل",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 6.46,
+      "source": "live",
+      "keyword_coverage": 0.6666666666666666,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 0.9,
+      "passed": true
+    },
+    {
+      "id": "Q05",
+      "question": "كم عدد ساعات العمل اليومية؟",
+      "difficulty": "simple",
+      "expected_topic": "ساعات العمل",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 4.48,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q06",
+      "question": "ما هي شروط عقد العمل؟",
+      "difficulty": "medium",
+      "expected_topic": "عقود العمل",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 4.78,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q07",
+      "question": "ما هي أنواع الإجازات المتاحة للعامل؟",
+      "difficulty": "medium",
+      "expected_topic": "الإجازات",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.16666666666666666,
+        "coverage": 1.0
+      },
+      "latency_seconds": 14.91,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q08",
+      "question": "ما هي حقوق العامل عند إنهاء العقد؟",
+      "difficulty": "complex",
+      "expected_topic": "إنهاء علاقة العمل",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 5.94,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q09",
+      "question": "ما هي قواعد التأمينات الاجتماعية للعمال؟",
+      "difficulty": "medium",
+      "expected_topic": "التأمينات الاجتماعية",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.5,
+        "coverage": 1.0
+      },
+      "latency_seconds": 4.71,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q10",
+      "question": "ما هي إجراءات تسوية النزاعات العمالية؟",
+      "difficulty": "complex",
+      "expected_topic": "النزاعات العمالية",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 18.57,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q11",
+      "question": "ما هي قواعد السلامة والصحة المهنية؟",
+      "difficulty": "medium",
+      "expected_topic": "السلامة المهنية",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 11.92,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q12",
+      "question": "ما هي حقوق العامل في الإجازة المرضية؟",
+      "difficulty": "simple",
+      "expected_topic": "الإجازات",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 4.5,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q13",
+      "question": "ما الفرق بين عقد العمل محدد المدة وغير محدد المدة؟",
+      "difficulty": "complex",
+      "expected_topic": "عقود العمل",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 0.7925
+      },
+      "latency_seconds": 11.22,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q14",
+      "question": "ما هي قواعد تشغيل الأطفال؟",
+      "difficulty": "medium",
+      "expected_topic": "تشغيل الأطفال",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 1.0,
+        "coverage": 1.0
+      },
+      "latency_seconds": 11.58,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    },
+    {
+      "id": "Q15",
+      "question": "ما هي مدة إجازة الوضع للمرأة العاملة؟",
+      "difficulty": "simple",
+      "expected_topic": "حقوق المرأة العاملة",
+      "retrieval_metrics": {
+        "doc_count": 1.0,
+        "relevance": 0.3333333333333333,
+        "coverage": 1.0
+      },
+      "latency_seconds": 3.61,
+      "source": "live",
+      "keyword_coverage": 1.0,
+      "response_quality": {
+        "completeness": 1.0,
+        "structure": 1.0,
+        "legal_references": 1.0,
+        "arabic_quality": 1.0,
+        "no_error": 1.0
+      },
+      "overall_score": 1.0,
+      "passed": true
+    }
+  ]
+}

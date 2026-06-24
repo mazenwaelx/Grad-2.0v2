@@ -1,0 +1,43 @@
+{
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 54.14,
+    "timestamp": "2026-06-25T00:41:33.952710",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "Database Chat Flow",
+      "status": "passed",
+      "details": "Stored and retrieved 2 messages",
+      "duration_ms": 256
+    },
+    {
+      "name": "Retriever + LLM Integration",
+      "status": "passed",
+      "details": "Retrieved 6 docs, LLM responded with 595 chars",
+      "duration_ms": 15910
+    },
+    {
+      "name": "File Processor + Agent",
+      "status": "passed",
+      "details": "File processor initialized and functional",
+      "duration_ms": 2627
+    },
+    {
+      "name": "API + Database Integration",
+      "status": "passed",
+      "details": "Chat API successfully interacts with database",
+      "duration_ms": 16383
+    },
+    {
+      "name": "Agent Full Pipeline",
+      "status": "passed",
+      "details": "Agent processed query successfully (771 chars)",
+      "duration_ms": 18964
+    }
+  ]
+}

@@ -51,8 +51,15 @@ def _latest_json(prefix: str):
     files = sorted(REPORTS_DIR.glob(f"{prefix}_*.json"))
     return json.loads(files[-1].read_text(encoding="utf-8")) if files else {}
 
-playwright_data  = _latest_json("playwright_results")
-deepchecks_data  = _latest_json("deepchecks_results")
+playwright_data    = _latest_json("playwright_results")
+deepchecks_data    = _latest_json("deepchecks_results")
+unit_data          = _latest_json("unit_results")
+integration_data   = _latest_json("integration_results")
+mock_data          = _latest_json("mock_results")
+system_data        = _latest_json("system_results")
+functional_data    = _latest_json("functional_results")
+security_data      = _latest_json("security_results")
+usability_data     = _latest_json("usability_results")
 
 class TestReportPDF(FPDF):
     """Custom PDF with header/footer, colour helpers, and table builders."""
@@ -155,6 +162,50 @@ class TestReportPDF(FPDF):
             self.set_text_color(*RED)
             self.set_font("Arial", "B", 10)
             self.cell(20, 5, "FAIL", align="C")
+    
+    def render_test_details_table(self, results, title="Detailed Test Results"):
+        """Render a detailed test results table"""
+        self.sub_title(title)
+        if not results:
+            self.body_text("No test results available.")
+            return
+        
+        col_w = [10, 68, 22, 22, 58]
+        self.set_font("Arial", "B", 9)
+        self.set_fill_color(*DARK_BLUE)
+        self.set_text_color(*WHITE)
+        for i, h in enumerate(["#", "Test Name", "Status", "Duration", "Details"]):
+            self.cell(col_w[i], 7, h, border=1, fill=True, align="C")
+        self.ln()
+        
+        for idx, test in enumerate(results):
+            bg = GRAY_50 if idx % 2 == 0 else WHITE
+            self.set_fill_color(*bg)
+            
+            self.set_font("Arial", "", 9)
+            self.set_text_color(*GRAY_700)
+            self.cell(col_w[0], 6, str(idx + 1), border=1, fill=True, align="C")
+            self.cell(col_w[1], 6, test.get("name", "")[:30], border=1, fill=True)
+            
+            status = test.get("status", "")
+            color = GREEN if status == "passed" else RED if status == "failed" else ACCENT_GOLD
+            self.set_text_color(*color)
+            self.set_font("Arial", "B", 9)
+            self.cell(col_w[2], 6, status.upper()[:7], border=1, fill=True, align="C")
+            
+            self.set_font("Arial", "", 9)
+            self.set_text_color(*GRAY_700)
+            dur = test.get("duration_ms", 0)
+            dur_str = f"{dur}ms" if dur < 1000 else f"{dur/1000:.1f}s"
+            self.cell(col_w[3], 6, dur_str, border=1, fill=True, align="C")
+            
+            details = test.get("details", test.get("error", ""))
+            if len(details) > 40:
+                details = details[:37] + "..."
+            self.cell(col_w[4], 6, details, border=1, fill=True)
+            self.ln()
+        
+        self.ln(4)
 
 
 def build_report():
@@ -236,11 +287,17 @@ def build_report():
         ("1", "Executive Summary", "3"),
         ("2", "System Architecture & Technology Stack", "4"),
         ("3", "Testing Methodology", "5"),
-        ("4", "Playwright E2E Test Results", "6"),
-        ("5", "Deepchecks RAG Evaluation Results", "7"),
-        ("6", "MLflow Experiment Tracking", "9"),
-        ("7", "Per-Question Detailed Breakdown", "10"),
-        ("8", "Conclusions & Recommendations", "12"),
+        ("4", "Unit Test Results", "6"),
+        ("5", "Integration Test Results", "7"),
+        ("6", "Mock Test Results", "8"),
+        ("7", "Functional Test Results", "9"),
+        ("8", "System Test Results", "10"),
+        ("9", "Security Test Results", "11"),
+        ("10", "Usability Test Results", "12"),
+        ("11", "Playwright E2E Test Results", "13"),
+        ("12", "Deepchecks RAG Evaluation Results", "14"),
+        ("13", "MLflow Experiment Tracking", "16"),
+        ("14", "Conclusions & Recommendations", "17"),
     ]
     for num, title, page in toc_items:
         pdf.set_font("Arial", "B", 11)
@@ -264,17 +321,19 @@ def build_report():
         "This report presents the comprehensive testing and evaluation results for the "
         "Egyptian Legal AI system — an intelligent Retrieval-Augmented Generation (RAG) "
         "assistant specialised in Egyptian Labour Law (Law 14 of 2025). The system was "
-        "evaluated across three complementary dimensions:"
+        "evaluated across nine complementary test categories covering all aspects of quality:"
     )
 
     bullets = [
-        "End-to-End (E2E) Testing via Playwright: 13 automated browser tests covering "
-        "authentication, file management, API health, responsive design, and AI legal accuracy.",
-        "RAG Quality Evaluation via Deepchecks: 15 legal questions spanning 7 topic areas "
-        "at 3 difficulty levels, measuring keyword coverage, response quality, and legal "
-        "reference accuracy.",
-        "Experiment Tracking via MLflow: Systematic logging of model parameters, quality "
-        "metrics, and performance data for reproducibility and comparison.",
+        "Unit Tests: 8 tests validating individual components (embeddings, chunking, caching, etc.)",
+        "Integration Tests: 5 tests ensuring components work together correctly",
+        "Mock Tests: 8 tests using mocked dependencies to isolate functionality",
+        "Functional Tests: 7 tests verifying specific feature requirements",
+        "System Tests: 6 end-to-end workflow tests including concurrent access",
+        "Security Tests: 7 tests covering authentication, SQL injection, XSS prevention",
+        "Usability Tests: 6 tests measuring user experience and response quality",
+        "Playwright E2E Tests: 13 automated browser tests covering UI and AI accuracy",
+        "Deepchecks RAG Evaluation: 15 legal questions at 3 difficulty levels",
     ]
     for b in bullets:
         pdf.set_font("Arial", "", 10)
@@ -289,12 +348,29 @@ def build_report():
     # KPI Cards
     pw_summary = playwright_data.get("summary", {})
     dc_summary = deepchecks_data.get("summary", {})
+    unit_summary = unit_data.get("summary", {})
+    integration_summary = integration_data.get("summary", {})
+    mock_summary = mock_data.get("summary", {})
+    system_summary = system_data.get("summary", {})
+    functional_summary = functional_data.get("summary", {})
+    security_summary = security_data.get("summary", {})
+    usability_summary = usability_data.get("summary", {})
+    
+    # Calculate overall statistics
+    all_summaries = [pw_summary, dc_summary, unit_summary, integration_summary, 
+                     mock_summary, system_summary, functional_summary, security_summary, usability_summary]
+    
+    # Handle both 'total' and 'total_tests' keys (deepchecks uses 'total_tests')
+    total_tests = sum(s.get('total', s.get('total_tests', 0)) for s in all_summaries)
+    total_passed = sum(s.get('passed', 0) for s in all_summaries)
+    total_failed = sum(s.get('failed', 0) for s in all_summaries)
+    overall_pass_rate = (total_passed / max(total_tests, 1)) * 100
 
     cards = [
-        ("E2E Pass Rate", f"{pw_summary.get('pass_rate', 100):.0f}%", GREEN),
-        ("RAG Pass Rate", f"{dc_summary.get('pass_rate', 100):.0f}%", GREEN),
-        ("Avg Quality Score", f"{dc_summary.get('average_score', 0.945):.1%}", MEDIUM_BLUE),
-        ("Total Tests Run", str(pw_summary.get('total', 13) + dc_summary.get('total_tests', 15)), DARK_BLUE),
+        ("Overall Pass Rate", f"{overall_pass_rate:.0f}%", GREEN),
+        ("Total Tests", str(total_tests), DARK_BLUE),
+        ("Passed", str(total_passed), GREEN),
+        ("Failed", str(total_failed), RED if total_failed > 0 else GREEN),
     ]
 
     card_w = 42
@@ -307,13 +383,26 @@ def build_report():
     pdf.ln(card_h + 8)
 
     # Summary verdict
-    pdf._bg_rect(pdf.l_margin, pdf.get_y(), pdf.w - 2*pdf.l_margin, 14, (240, 253, 244))
-    pdf.set_draw_color(*GREEN)
+    if total_failed == 0:
+        verdict_color = (240, 253, 244)  # Light green
+        verdict_text_color = GREEN
+        verdict_text = f"VERDICT: All {total_tests} tests passed successfully — {overall_pass_rate:.1f}% pass rate across all test suites."
+    elif overall_pass_rate >= 90:
+        verdict_color = (254, 249, 195)  # Light yellow
+        verdict_text_color = ACCENT_GOLD
+        verdict_text = f"VERDICT: {total_passed}/{total_tests} tests passed — {overall_pass_rate:.1f}% pass rate. Minor issues identified."
+    else:
+        verdict_color = (254, 226, 226)  # Light red
+        verdict_text_color = RED
+        verdict_text = f"VERDICT: {total_passed}/{total_tests} tests passed — {overall_pass_rate:.1f}% pass rate. Action required."
+    
+    pdf._bg_rect(pdf.l_margin, pdf.get_y(), pdf.w - 2*pdf.l_margin, 14, verdict_color)
+    pdf.set_draw_color(*verdict_text_color)
     pdf.rect(pdf.l_margin, pdf.get_y(), pdf.w - 2*pdf.l_margin, 14, style="D")
     pdf.set_xy(pdf.l_margin + 4, pdf.get_y() + 3)
     pdf.set_font("Arial", "B", 11)
-    pdf.set_text_color(*GREEN)
-    pdf.cell(0, 8, "VERDICT:  All 28 tests passed successfully — 100% pass rate across all evaluation suites.")
+    pdf.set_text_color(*verdict_text_color)
+    pdf.cell(0, 8, verdict_text)
     pdf.ln(18)
 
     # ═══════════════════════════════════════════════════════════
@@ -433,10 +522,178 @@ def build_report():
     pdf.body_text("Pass threshold: Overall Score >= 50%")
 
     # ═══════════════════════════════════════════════════════════
-    #  4. PLAYWRIGHT E2E TEST RESULTS
+    #  4. UNIT TEST RESULTS
     # ═══════════════════════════════════════════════════════════
     pdf.add_page()
-    pdf.section_title("4", "Playwright E2E Test Results")
+    pdf.section_title("4", "Unit Test Results")
+    
+    unit_s = unit_data.get("summary", {})
+    pdf.body_text(
+        f"Unit tests validate individual components in isolation. "
+        f"{unit_s.get('total', 0)} tests were executed covering embeddings, text processing, "
+        f"caching, and prompt building."
+    )
+    
+    # Summary table
+    y = pdf.get_y()
+    mini_cards = [
+        ("Total", str(unit_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(unit_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{unit_s.get('pass_rate', 0):.0f}%", GREEN if unit_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]
+    cw = 56
+    start = pdf.l_margin + (pdf.w - 2*pdf.l_margin - 3*cw - 2*4) / 2
+    for i, (l, v, c) in enumerate(mini_cards):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    # Detailed test results
+    pdf.render_test_details_table(unit_data.get("results", []), "4.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  5. INTEGRATION TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("5", "Integration Test Results")
+    
+    int_s = integration_data.get("summary", {})
+    pdf.body_text(
+        f"Integration tests verify that different system components work together correctly. "
+        f"{int_s.get('total', 0)} tests covering database-agent, retriever-LLM, and API-database integration."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(int_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(int_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{int_s.get('pass_rate', 0):.0f}%", GREEN if int_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    # Detailed test results
+    pdf.render_test_details_table(integration_data.get("results", []), "5.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  6. MOCK TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("6", "Mock Test Results")
+    
+    mock_s = mock_data.get("summary", {})
+    pdf.body_text(
+        f"Mock tests use simulated dependencies to isolate and test specific functionality. "
+        f"{mock_s.get('total', 0)} tests with mocked LLM, database, retriever, and API calls."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(mock_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(mock_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{mock_s.get('pass_rate', 0):.0f}%", GREEN if mock_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    pdf.render_test_details_table(mock_data.get("results", []), "6.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  7. FUNCTIONAL TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("7", "Functional Test Results")
+    
+    func_s = functional_data.get("summary", {})
+    pdf.body_text(
+        f"Functional tests verify specific feature requirements: user authentication, "
+        f"chat creation, message storage, search retrieval. {func_s.get('total', 0)} tests executed."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(func_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(func_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{func_s.get('pass_rate', 0):.0f}%", GREEN if func_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    pdf.render_test_details_table(functional_data.get("results", []), "7.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  8. SYSTEM TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("8", "System Test Results")
+    
+    sys_s = system_data.get("summary", {})
+    pdf.body_text(
+        f"System tests validate complete end-to-end workflows: user registration through chat, "
+        f"concurrent access, error recovery. {sys_s.get('total', 0)} comprehensive workflow tests."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(sys_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(sys_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{sys_s.get('pass_rate', 0):.0f}%", GREEN if sys_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    pdf.render_test_details_table(system_data.get("results", []), "8.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  9. SECURITY TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("9", "Security Test Results")
+    
+    sec_s = security_data.get("summary", {})
+    pdf.body_text(
+        f"Security tests verify protection against common vulnerabilities: SQL injection, "
+        f"XSS attacks, authentication bypass, password hashing. {sec_s.get('total', 0)} security checks."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(sec_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(sec_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{sec_s.get('pass_rate', 0):.0f}%", GREEN if sec_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    pdf.render_test_details_table(security_data.get("results", []), "9.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  10. USABILITY TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("10", "Usability Test Results")
+    
+    usa_s = usability_data.get("summary", {})
+    pdf.body_text(
+        f"Usability tests measure user experience: response clarity, Arabic text quality, "
+        f"response time, error message helpfulness. {usa_s.get('total', 0)} UX-focused tests."
+    )
+    
+    y = pdf.get_y()
+    for i, (l, v, c) in enumerate([
+        ("Total", str(usa_s.get('total', 0)), DARK_BLUE),
+        ("Passed", str(usa_s.get('passed', 0)), GREEN),
+        ("Pass Rate", f"{usa_s.get('pass_rate', 0):.0f}%", GREEN if usa_s.get('pass_rate', 0) >= 90 else ACCENT_GOLD),
+    ]):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+    
+    pdf.render_test_details_table(usability_data.get("results", []), "10.1  Detailed Test Results")
+    
+    # ═══════════════════════════════════════════════════════════
+    #  11. PLAYWRIGHT E2E TEST RESULTS
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("11", "Playwright E2E Test Results")
 
     pw = playwright_data
     pw_s = pw.get("summary", {})
@@ -546,10 +803,10 @@ def build_report():
         pdf.ln()
 
     # ═══════════════════════════════════════════════════════════
-    #  5. DEEPCHECKS RAG EVALUATION
+    #  12. DEEPCHECKS RAG EVALUATION
     # ═══════════════════════════════════════════════════════════
     pdf.add_page()
-    pdf.section_title("5", "Deepchecks RAG Evaluation Results")
+    pdf.section_title("12", "Deepchecks RAG Evaluation Results")
 
     dc = deepchecks_data
     dc_s = dc.get("summary", {})
@@ -663,10 +920,10 @@ def build_report():
             pdf.ln()
 
     # ═══════════════════════════════════════════════════════════
-    #  6. MLFLOW EXPERIMENT TRACKING
+    #  13. MLFLOW EXPERIMENT TRACKING
     # ═══════════════════════════════════════════════════════════
     pdf.add_page()
-    pdf.section_title("6", "MLflow Experiment Tracking")
+    pdf.section_title("13", "MLflow Experiment Tracking")
 
     pdf.body_text(
         "MLflow provides systematic experiment tracking for the evaluation pipeline. "

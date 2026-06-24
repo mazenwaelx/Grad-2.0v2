@@ -1,0 +1,60 @@
+{
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "elapsed_seconds": 11.08,
+    "timestamp": "2026-06-25T01:09:41.464416",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "Embeddings Generation",
+      "status": "passed",
+      "details": "Generated 1024-dim vector for Arabic text",
+      "duration_ms": 11068
+    },
+    {
+      "name": "Text Chunking",
+      "status": "passed",
+      "details": "Created 4 chunks from 6015 chars",
+      "duration_ms": 14
+    },
+    {
+      "name": "Query Expansion",
+      "status": "passed",
+      "details": "Expanded query from 18 to 40 chars",
+      "duration_ms": 0
+    },
+    {
+      "name": "Document Deduplication",
+      "status": "passed",
+      "details": "Deduplicated 5 docs to 3 unique",
+      "duration_ms": 0
+    },
+    {
+      "name": "Arabic Text Processing",
+      "status": "passed",
+      "details": "Arabic normalization working correctly",
+      "duration_ms": 0
+    },
+    {
+      "name": "Cache Management",
+      "status": "passed",
+      "details": "Cache operations working correctly",
+      "duration_ms": 0
+    },
+    {
+      "name": "Prompt Building",
+      "status": "passed",
+      "details": "Built prompt with 152 chars",
+      "duration_ms": 0
+    },
+    {
+      "name": "Response Validation",
+      "status": "passed",
+      "details": "Validated 5 test cases correctly",
+      "duration_ms": 0
+    }
+  ]
+}

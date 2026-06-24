@@ -4,7 +4,7 @@ User management functions with secure password hashing
 import bcrypt
 from database.db_config import get_db_connection, is_using_sqlite
 
-def create_user(email, name, password):
+def create_user(email, name, password, role="User", phone="", city=""):
     """Create a new user with bcrypt hashed password"""
     connection = get_db_connection()
     if not connection:
@@ -12,13 +12,16 @@ def create_user(email, name, password):
     
     try:
         # Hash the password using bcrypt (secure!)
-        password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        password_hash_bytes = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # Convert bytes to string for SQL Server NVARCHAR storage
+        password_hash = password_hash_bytes.decode('utf-8')
         
         cursor = connection.cursor()
-        # Use PascalCase for SQL Server columns: Name, Email, Password
+        # Use PascalCase for SQL Server columns: Email, FullName, PasswordHash, Role, Phone, City, CreatedAt
+        from datetime import datetime
         cursor.execute(
-            "INSERT INTO Users (Email, Name, Password) VALUES (?, ?, ?)",
-            (email, name, password_hash)
+            "INSERT INTO Users (Email, FullName, PasswordHash, Role, Phone, City, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (email, name, password_hash, role, phone, city, datetime.now())
         )
         connection.commit()
         return True, "User created successfully"
@@ -66,15 +69,22 @@ def verify_user(email, password):
         return False, None
     
     try:
-        # Use PascalCase: Password
-        password_hash = user['Password']
-        # Handle both bytes and string from database
+        # Use PascalCase: PasswordHash
+        password_hash = user['PasswordHash']
+        
+        if password_hash is None:
+            return False, None
+        
+        # Convert string back to bytes for bcrypt verification
         if isinstance(password_hash, str):
-            password_hash = password_hash.encode('utf-8')
+            password_hash_bytes = password_hash.encode('utf-8')
+        else:
+            password_hash_bytes = password_hash
         
         # Use bcrypt to verify password securely
-        if bcrypt.checkpw(password.encode('utf-8'), password_hash):
+        if bcrypt.checkpw(password.encode('utf-8'), password_hash_bytes):
             return True, user
+        
     except Exception as e:
         print(f"[ERROR] Password verification failed: {e}")
     

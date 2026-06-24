@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "pass_rate": 100.0,
+    "elapsed_seconds": 7.99,
+    "timestamp": "2026-06-25T00:33:03.082725"
+  },
+  "results": [
+    {
+      "name": "Login Page Load",
+      "status": "passed",
+      "error": null,
+      "duration_ms": 3134,
+      "screenshots": []
+    }
+  ]
+}

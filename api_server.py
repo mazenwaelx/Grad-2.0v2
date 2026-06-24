@@ -26,7 +26,7 @@ from src.llm.llm_manager import init_llm
 from src.config.settings import MODEL_NAME
 from data.data_embedding import SentenceTransformerEmbeddings
 from database import (
-    init_database, create_user, verify_user,
+    init_database,
     create_chat, get_user_chats, update_chat_title, delete_chat, get_chat_messages
 )
 from database.db_memory_store import DatabaseChatMessageHistory
@@ -69,21 +69,6 @@ class ChatRequest(BaseModel):
     message: str
     chat_id: str
     user_id: str  # Can be email (for backward compatibility) or actual user_id
-
-class UserRegister(BaseModel):
-
-    email: str
-    name: str
-    password: str
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-class UserResponse(BaseModel):
-    email: str
-    name: str
-    token: str = "demo_token"  # For demo purposes
 
 class FileUploadResponse(BaseModel):
     success: bool
@@ -145,28 +130,15 @@ def get_or_create_agent(user_id: str, chat_id: str):
 
 @app.get("/")
 async def root():
-    """Redirect to login page"""
-    from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/static/login.html")
-
-@app.post("/api/register", response_model=UserResponse)
-def register(user: UserRegister):
-    """Register a new user"""
-    success, message = create_user(user.email, user.name, user.password)
-    if success:
-        return UserResponse(email=user.email, name=user.name)
-    else:
-        raise HTTPException(status_code=400, detail=message)
-
-@app.post("/api/login", response_model=UserResponse)
-def login(credentials: UserLogin):
-    """Login user"""
-    success, user = verify_user(credentials.email, credentials.password)
-    if success:
-        # Use PascalCase field names from SQL Server
-        return UserResponse(email=user['Email'], name=user['Name'])
-    else:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    """API root endpoint"""
+    return {
+        "name": "Egyptian Legal AI API",
+        "version": "1.0.0",
+        "description": "AI-powered legal assistant for Egyptian labour law",
+        "docs": "/docs",
+        "health": "/api/health",
+        "note": "Authentication is handled by LawyerConnect website"
+    }
 
 @app.get("/api/chats/{user_email}")
 def get_chats(user_email: str):

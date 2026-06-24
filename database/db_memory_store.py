@@ -3,16 +3,25 @@ Database-backed chat message history for LangChain
 """
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
-from typing import List
-from database.chat_manager import add_message, get_recent_messages
+from typing import List, Optional
+from database.chat_manager import add_message, get_recent_messages, create_chat
 
 class DatabaseChatMessageHistory(BaseChatMessageHistory):
     """Chat message history stored in MySQL database"""
     
-    def __init__(self, chat_id: str):
+    def __init__(self, chat_id: str, user_id: Optional[int] = None):
         self.chat_id = chat_id
+        self.user_id = user_id if user_id is not None else 1  # Default to user_id=1 (admin/system)
         self._messages = []
+        
+        # Ensure chat exists before loading messages
+        self._ensure_chat_exists()
         self._load_messages()
+    
+    def _ensure_chat_exists(self):
+        """Ensure the chat exists in the database"""
+        # Try to create the chat (will silently succeed if it already exists)
+        create_chat(self.chat_id, self.user_id, "AI Chat")
     
     def _load_messages(self):
         """Load recent messages from database"""

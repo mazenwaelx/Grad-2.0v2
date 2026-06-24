@@ -1,0 +1,56 @@
+{
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": 0,
+    "elapsed_seconds": 15.46,
+    "timestamp": "2026-06-25T00:17:22.566843",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "Password Hashing",
+      "status": "passed",
+      "details": "Passwords are properly hashed",
+      "duration_ms": 217
+    },
+    {
+      "name": "SQL Injection Prevention",
+      "status": "passed",
+      "details": "SQL injection attacks prevented",
+      "duration_ms": 2
+    },
+    {
+      "name": "Authentication Bypass Prevention",
+      "status": "passed",
+      "details": "Authentication bypass prevented",
+      "duration_ms": 6302
+    },
+    {
+      "name": "XSS Protection",
+      "status": "passed",
+      "details": "XSS input rejected",
+      "duration_ms": 4052
+    },
+    {
+      "name": "Input Validation",
+      "status": "passed",
+      "details": "Invalid inputs rejected",
+      "duration_ms": 838
+    },
+    {
+      "name": "CORS Configuration",
+      "status": "passed",
+      "details": "CORS configured",
+      "duration_ms": 4047
+    },
+    {
+      "name": "Error Message Safety",
+      "status": "passed",
+      "details": "Error messages don't leak sensitive info",
+      "duration_ms": 1
+    }
+  ]
+}
