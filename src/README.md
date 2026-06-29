@@ -1,151 +1,48 @@
-# Source Code Structure
+# Python AI Core (src)
 
-This directory contains the modular implementation of the Egyptian Legal Assistant.
+This directory contains the core logic for the Egyptian Legal AI Assistant, including the LangChain agent, retrieval logic, and LLM configuration.
 
 ## 📁 Directory Structure
 
-```
+```text
 src/
-├── __init__.py
-├── config/              # Configuration and settings
-│   ├── __init__.py
-│   └── settings.py      # Constants, paths, API key management
-├── prompts/             # System prompts
-│   ├── __init__.py
-│   └── system_prompts.py # LLM system prompts
-├── llm/                 # LLM management
-│   ├── __init__.py
-│   └── llm_manager.py   # LLM initialization
-├── memory/              # Chat history management
-│   ├── __init__.py
-│   └── chat_history.py  # Session history functions
-├── retrieval/           # Document retrieval
-│   ├── __init__.py
-│   ├── retriever.py     # FAISS retriever setup
-│   └── dynamic_retrieval.py # Dynamic document retrieval
-├── agents/              # LangChain ReAct Agent
-│   ├── __init__.py
-│   └── langchain_react_agent.py   # LangChainReActAgent class
-└── ui/                  # User interface
-    ├── __init__.py
-    └── streamlit_app.py # Streamlit UI implementation
+├── agents/              # LangChain ReAct Agent logic
+│   ├── langchain_react_agent.py # Main agent class
+│   ├── tool_builder.py          # Dynamic LangChain tool generation
+│   ├── prompt_templates.py      # System prompts and templates
+│   └── query_expansion.py       # Query expansion for better search
+├── config/              # Configuration
+│   └── settings.py      # Environment variables and constants
+├── llm/                 # Language Model layer
+│   └── llm_manager.py   # Google Gemini initialization
+└── retrieval/           # RAG (Retrieval-Augmented Generation) layer
+    ├── dynamic_retrieval.py # Intelligent document search
+    ├── file_processor.py    # Handling uploaded user documents (PDF/DOCX)
+    ├── retriever.py         # FAISS vector store integration
+    └── ocr_strategies.py    # Image text extraction (Gemini Vision / Tesseract)
 ```
-
-## 🔧 Module Descriptions
-
-### config/
-Configuration management for the application.
-- `settings.py`: Application constants, paths, API key validation
-
-
-
-### prompts/
-LLM prompt templates.
-- `system_prompts.py`: System prompt for the legal assistant
-
-### llm/
-Language model management.
-- `llm_manager.py`: LLM initialization and configuration
-
-### memory/
-Chat history and conversation management.
-- `chat_history.py`: Session history storage and retrieval
-
-### retrieval/
-Document retrieval and legal research tools.
-- `retriever.py`: FAISS vector store initialization
-- `dynamic_retrieval.py`: Dynamic document retrieval optimization
-
-### agents/
-LangChain ReAct Agent implementation.
-- `langchain_react_agent.py`: Official LangChain ReAct Agent with:
-  - Topic relevance checking
-  - Follow-up question detection
-  - Smart retrieval skipping
-  - Context composition
-
-### ui/
-User interface implementation.
-- `streamlit_app.py`: Streamlit web interface
 
 ## 🚀 Usage
 
-### Running the Application
+### Running the System
 
+You do not run scripts inside this directory directly. The AI Core is imported and served via the main FastAPI backend.
+
+To launch the AI backend and all other services:
 ```bash
-# From project root
-streamlit run src/ui/streamlit_app.py
+# From the project root (Grad 2.0)
+START_SERVERS.bat
 ```
 
-### Importing Modules
+### Extending the Agent
 
-```python
-# Configuration
-from src.config import MODEL_NAME, DEFAULT_SESSION_ID
+If you want to add new capabilities to the AI, you should:
+1. Define a new tool inside `src/agents/tool_builder.py`.
+2. Ensure the prompt handles it correctly in `src/agents/prompt_templates.py`.
 
+### Dependencies
 
-
-# LLM
-from src.llm import init_llm
-
-# Memory (now handled by database in API server)
-# from src.memory import get_session_history, reset_history
-
-# Retrieval
-from src.retrieval import prepare_retriever
-
-# Agent
-from src.agents import LangChainReActAgent, build_langchain_tools
-
-# Prompts
-from src.prompts import SYSTEM_PROMPT
-
-# UI
-from src.ui import run_app
-```
-
-## 📝 Adding New Features
-
-### Adding a New Tool
-
-1. Edit `src/agents/langchain_react_agent.py`
-2. Add your tool function in `build_langchain_tools()`
-3. Add it to the returned tools list
-
-### Modifying the Agent
-
-1. Edit `src/agents/langchain_react_agent.py`
-2. Add new methods to `LangChainReActAgent` class
-
-### Changing Configuration
-
-1. Edit `src/config/settings.py`
-2. Update constants as needed
-
-### Updating Prompts
-
-1. Edit `src/prompts/system_prompts.py`
-2. Modify `SYSTEM_PROMPT` constant
-
-## 🧪 Testing
-
-```bash
-# Test imports
-python -c "from src.agents import LangChainReActAgent; print('✓ Imports working')"
-
-# Test configuration
-python -c "from src.config import MODEL_NAME; print(f'Model: {MODEL_NAME}')"
-
-# Compile check
-python -m py_compile api_server.py
-```
-
-## 📦 Dependencies
-
-All modules depend on:
-- `langchain` - LLM framework
-- `streamlit` - Web UI
-- `sentence-transformers` - Embeddings
-- `faiss-cpu` - Vector search
-
-See `requirements.txt` in project root for full list.
+This module relies heavily on:
+- `langchain` and `langchain-google-genai` for agent reasoning.
+- `faiss-cpu` and `sentence-transformers` for document retrieval.
+- `pytesseract` for local OCR capabilities.
