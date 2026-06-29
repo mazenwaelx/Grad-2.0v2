@@ -1,130 +1,118 @@
 """
-Dynamic document retrieval based on question complexity
+Dynamic document retrieval based on question complexity.
+
+Analyses Arabic questions to determine how many documents to
+retrieve — simple questions get fewer, complex ones get more.
 """
+from __future__ import annotations
+
 import re
-from typing import Dict, Any
+from typing import Dict, Any, List
+
+
+# ── Complexity indicator catalogue ─────────────────────────────────
+
+# Simple question patterns (reduce complexity score)
+_SIMPLE_PATTERNS: List[str] = [
+    r"^ما هو\s+",
+    r"^ما هي\s+",
+    r"^كم\s+",
+    r"^متى\s+",
+    r"^أين\s+",
+]
+
+# Complex question indicators (increase complexity score)
+_COMPLEX_INDICATORS: List[str] = [
+    "مقارنة", "فرق", "اختلاف", "بين",
+    "إجراءات", "خطوات", "كيفية",
+    "حالات", "أنواع", "أشكال",
+    "استثناءات", "شروط",
+    "تفصيل", "بالتفصيل", "اشرح",
+]
+
+# Multi-topic indicators (moderate increase)
+_MULTI_TOPIC_INDICATORS: List[str] = [
+    "و", "أو", "كذلك", "أيضاً",
+    "جميع", "كل", "كافة",
+]
 
 
 class DynamicRetrieval:
-    """Intelligently determine how many documents to retrieve based on question complexity"""
-    
-    def __init__(self):
-        self.complexity_indicators = {
-            # Simple questions (2-3 docs)
-            'simple_patterns': [
-                r'^ما هو\s+',  # What is...
-                r'^ما هي\s+',  # What is...
-                r'^كم\s+',     # How much/many...
-                r'^متى\s+',    # When...
-                r'^أين\s+',    # Where...
-            ],
-            
-            # Complex questions (4-6 docs)
-            'complex_indicators': [
-                'مقارنة', 'فرق', 'اختلاف', 'بين',  # Comparison
-                'إجراءات', 'خطوات', 'كيفية',      # Procedures
-                'حالات', 'أنواع', 'أشكال',        # Multiple cases
-                'استثناءات', 'شروط',             # Exceptions/conditions
-                'تفصيل', 'بالتفصيل', 'اشرح',     # Detailed explanation
-            ],
-            
-            # Multi-topic questions (5-6 docs)
-            'multi_topic_indicators': [
-                'و', 'أو', 'كذلك', 'أيضاً',      # Multiple topics
-                'جميع', 'كل', 'كافة',            # All/comprehensive
-            ]
-        }
-    
+    """Determine how many documents to retrieve based on question complexity."""
+
+    # ── Scoring weights ────────────────────────────────────────────
+    _COMPLEX_WEIGHT = 1.5
+    _MULTI_TOPIC_WEIGHT = 1.0
+    _LONG_QUESTION_THRESHOLD = 15  # words
+    _SHORT_QUESTION_THRESHOLD = 5
+
+    # ── Score → document-count mapping ─────────────────────────────
+    _SCORE_TIERS = [
+        (0, 2, "simple"),
+        (2, 3, "simple"),
+        (4, 4, "medium"),
+        (6, 5, "complex"),
+    ]
+    _MAX_DOCS = 6
+    _MAX_LEVEL = "very_complex"
+
     def analyze_question_complexity(self, question: str) -> Dict[str, Any]:
-        """Analyze question complexity and return recommended document count"""
+        """Analyse question complexity and recommend a document count."""
         question_lower = question.lower().strip()
-        
-        # Initialize scores
-        complexity_score = 0
-        indicators_found = []
-        
-        # Check for simple patterns (reduces complexity)
-        is_simple = any(re.match(pattern, question_lower) for pattern in self.complexity_indicators['simple_patterns'])
-        if is_simple:
-            complexity_score -= 2
-            indicators_found.append("simple_pattern")
-        
-        # Check for complex indicators
-        complex_count = sum(1 for indicator in self.complexity_indicators['complex_indicators'] 
-                          if indicator in question_lower)
-        complexity_score += complex_count * 1.5
-        if complex_count > 0:
-            indicators_found.extend([f"complex_{i}" for i in range(complex_count)])
-        
-        # Check for multi-topic indicators
-        multi_topic_count = sum(1 for indicator in self.complexity_indicators['multi_topic_indicators'] 
-                              if indicator in question_lower)
-        complexity_score += multi_topic_count * 1
-        if multi_topic_count > 0:
-            indicators_found.extend([f"multi_topic_{i}" for i in range(multi_topic_count)])
-        
-        # Question length factor
+        score = 0.0
+        indicators: List[str] = []
+
+        # Simple-pattern check
+        if any(re.match(p, question_lower) for p in _SIMPLE_PATTERNS):
+            score -= 2
+            indicators.append("simple_pattern")
+
+        # Complex indicators
+        complex_count = sum(1 for ind in _COMPLEX_INDICATORS if ind in question_lower)
+        score += complex_count * self._COMPLEX_WEIGHT
+        indicators.extend(f"complex_{i}" for i in range(complex_count))
+
+        # Multi-topic indicators
+        multi_count = sum(1 for ind in _MULTI_TOPIC_INDICATORS if ind in question_lower)
+        score += multi_count * self._MULTI_TOPIC_WEIGHT
+        indicators.extend(f"multi_topic_{i}" for i in range(multi_count))
+
+        # Question length
         word_count = len(question.split())
-        if word_count > 15:
-            complexity_score += 1
-            indicators_found.append("long_question")
-        elif word_count < 5:
-            complexity_score -= 1
-            indicators_found.append("short_question")
-        
-        # Determine document count based on complexity score
-        if complexity_score <= 0:
-            doc_count = 2  # Very simple questions
-            complexity_level = "simple"
-        elif complexity_score <= 2:
-            doc_count = 3  # Simple questions
-            complexity_level = "simple"
-        elif complexity_score <= 4:
-            doc_count = 4  # Medium complexity
-            complexity_level = "medium"
-        elif complexity_score <= 6:
-            doc_count = 5  # Complex questions
-            complexity_level = "complex"
-        else:
-            doc_count = 6  # Very complex questions
-            complexity_level = "very_complex"
-        
+        if word_count > self._LONG_QUESTION_THRESHOLD:
+            score += 1
+            indicators.append("long_question")
+        elif word_count < self._SHORT_QUESTION_THRESHOLD:
+            score -= 1
+            indicators.append("short_question")
+
+        doc_count, level = self._score_to_recommendation(score)
+
         return {
-            "complexity_score": complexity_score,
-            "complexity_level": complexity_level,
+            "complexity_score": score,
+            "complexity_level": level,
             "recommended_docs": doc_count,
-            "indicators_found": indicators_found,
-            "word_count": word_count
+            "indicators_found": indicators,
+            "word_count": word_count,
         }
-    
+
     def get_optimal_k(self, question: str) -> int:
-        """Get optimal number of documents to retrieve for this question"""
-        analysis = self.analyze_question_complexity(question)
-        return analysis["recommended_docs"]
+        """Return the optimal number of documents to retrieve."""
+        return self.analyze_question_complexity(question)["recommended_docs"]
+
+    # ── Private helpers ────────────────────────────────────────────
+    def _score_to_recommendation(self, score: float):
+        """Map a complexity score to (doc_count, level_name)."""
+        for threshold, docs, level in self._SCORE_TIERS:
+            if score <= threshold:
+                return docs, level
+        return self._MAX_DOCS, self._MAX_LEVEL
 
 
-# Global instance
-dynamic_retrieval = DynamicRetrieval()
+# ── Module-level convenience ───────────────────────────────────────
+_instance = DynamicRetrieval()
 
 
 def get_dynamic_k(question: str) -> int:
-    """Get optimal document count for a question"""
-    return dynamic_retrieval.get_optimal_k(question)
-
-
-# Example usage and testing
-if __name__ == "__main__":
-    test_questions = [
-        "ما هي ساعات العمل؟",  # Simple -> 2-3 docs
-        "كم مدة الإجازة السنوية؟",  # Simple -> 2-3 docs
-        "ما الفرق بين إجازة الأمومة وإجازة الوضع؟",  # Complex -> 4-5 docs
-        "اشرح بالتفصيل إجراءات فصل العامل وما هي حقوقه في هذه الحالة؟",  # Very complex -> 6 docs
-        "ما هي جميع أنواع الإجازات المتاحة للعامل وشروط كل منها؟",  # Multi-topic -> 5-6 docs
-    ]
-    
-    for question in test_questions:
-        analysis = dynamic_retrieval.analyze_question_complexity(question)
-        print(f"\nQuestion: {question}")
-        print(f"Complexity: {analysis['complexity_level']} (score: {analysis['complexity_score']})")
-        print(f"Recommended docs: {analysis['recommended_docs']}")
-        print(f"Indicators: {analysis['indicators_found']}")
+    """Return the optimal document count for a question."""
+    return _instance.get_optimal_k(question)

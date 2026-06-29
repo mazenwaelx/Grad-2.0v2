@@ -338,11 +338,12 @@ class DeepChecksEvaluator:
             history_store = DatabaseChatMessageHistory(eval_chat_id)
             
             # Build tools and agent
-            tools = build_langchain_tools(self.retriever, history_store, file_processor)
             self.agent = LangChainReActAgent(
                 llm=llm,
-                tools=tools,
+                retriever=self.retriever,
                 history_store=history_store,
+                file_processor=None,
+                chat_id=eval_chat_id,
                 log_callback=lambda msg: print(f"    {msg}"),
                 max_iterations=6,
                 verbose=False,

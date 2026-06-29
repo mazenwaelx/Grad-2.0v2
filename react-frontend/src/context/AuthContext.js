@@ -1,7 +1,12 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const AuthContext = createContext(null);
 
+/**
+ * Access the auth context.
+ * @returns {{ currentUser: object|null, login: function, logout: function }}
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -10,34 +15,18 @@ export const useAuth = () => {
   return context;
 };
 
+/**
+ * Provides authentication state backed by localStorage.
+ */
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem('currentUser');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [currentUser, setCurrentUser, removeCurrentUser] =
+    useLocalStorage('currentUser', null);
 
-  const login = (user) => {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    setCurrentUser(user);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('currentUser');
-    setCurrentUser(null);
-  };
-
-  const value = {
-    currentUser,
-    login,
-    logout,
-  };
+  const login = (user) => setCurrentUser(user);
+  const logout = () => removeCurrentUser();
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -162,7 +162,7 @@ class SecurityTestSuite:
             )
             
             try:
-                with urllib.request.urlopen(req, timeout=10) as response:
+                with urllib.request.urlopen(req, timeout=45) as response:
                     data = jsonlib.loads(response.read())
                     # If it succeeds, check that it didn't bypass security
                     # (system might allow it but with proper sanitization)

@@ -106,6 +106,11 @@ class ApiService {
         });
 
         if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.dispatchEvent(new Event('auth-expired'));
+          }
           let errorMessage = `API Error: ${response.status} ${response.statusText}`;
           
           try {

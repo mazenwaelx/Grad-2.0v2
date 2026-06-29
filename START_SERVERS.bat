@@ -9,7 +9,7 @@ echo.
 
 REM 1. Start Python AI Backend (FIRST - other services depend on it)
 echo [1/4] Starting Python AI Backend on port 8000...
-start "AI Backend (Port 8000)" cmd /k "cd /d "%~dp0" && python api_server.py"
+start "AI Backend (Port 8000)" cmd /k "cd /d "%~dp0" && python main.py"
 echo      ^> AI Backend initializing...
 timeout /t 5 /nobreak > nul
 

@@ -36,6 +36,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     setIsLoading(false);
+
+    const handleAuthExpired = () => {
+      setUser(null);
+      setError('Your session has expired. Please log in again.');
+    };
+    
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
   }, []);
 
   const login = async (data: LoginDto) => {

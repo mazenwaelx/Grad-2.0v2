@@ -381,7 +381,7 @@ class UsabilityTestSuite:
                 chat_data = jsonlib.dumps({
                     "message": "",  # Empty - should fail validation
                     "chat_id": "error_test",
-                    "user_id": "test@test.com"
+                    "user_id": self.test_user_id
                 }).encode('utf-8')
                 
                 req = urllib.request.Request(

@@ -1,4 +1,5 @@
 import { useState, memo } from 'react';
+import ReactMarkdown from 'react-markdown';
 import './Message.css';
 
 const Message = ({ role, content, attachedFiles = [], onReply, animate }) => {
@@ -49,7 +50,11 @@ const Message = ({ role, content, attachedFiles = [], onReply, animate }) => {
           </div>
         )}
         <div className="message-content">
-          {content}
+          {role === 'assistant' ? (
+            <ReactMarkdown>{content}</ReactMarkdown>
+          ) : (
+            content
+          )}
         </div>
       </div>
       <div className="message-actions">

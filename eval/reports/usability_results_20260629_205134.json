@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": 0,
+    "elapsed_seconds": 79.74,
+    "timestamp": "2026-06-29T20:51:34.287055",
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "name": "Response Clarity",
+      "status": "passed",
+      "details": "Clarity score: 4/4",
+      "duration_ms": 4919
+    },
+    {
+      "name": "Arabic Text Quality",
+      "status": "passed",
+      "details": "Arabic quality: 72% Arabic chars",
+      "duration_ms": 28003
+    },
+    {
+      "name": "Response Time Acceptable",
+      "status": "passed",
+      "details": "Excellent response time: 8.2s",
+      "duration_ms": 10255
+    },
+    {
+      "name": "Error Message Helpfulness",
+      "status": "passed",
+      "details": "Error messages are appropriate",
+      "duration_ms": 4094
+    },
+    {
+      "name": "API Discoverability",
+      "status": "passed",
+      "details": "API documentation accessible (945 bytes)",
+      "duration_ms": 4072
+    },
+    {
+      "name": "Consistent Terminology",
+      "status": "passed",
+      "details": "Terminology consistent across responses",
+      "duration_ms": 22055
+    }
+  ]
+}

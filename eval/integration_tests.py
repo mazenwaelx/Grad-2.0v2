@@ -271,8 +271,10 @@ class IntegrationTestSuite:
             tools = build_langchain_tools(retriever, history_store, file_processor)
             agent = LangChainReActAgent(
                 llm=llm,
-                tools=tools,
+                retriever=retriever,
                 history_store=history_store,
+                file_processor=file_processor,
+                chat_id=chat_id,
                 log_callback=lambda msg: None,  # Silent
                 max_iterations=6,
                 verbose=False

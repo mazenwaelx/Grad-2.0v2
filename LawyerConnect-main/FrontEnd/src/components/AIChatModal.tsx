@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { X, Send, Bot, User, Sparkles, Upload, FileText, Trash2 } from 'lucide-react'
+import { X, Send, Bot, User, Sparkles, Upload, FileText, Trash2, Loader, Paperclip } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { apiService } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -327,7 +328,13 @@ export default function AIChatModal({ onClose }: AIChatModalProps) {
                     ? 'bg-gray-100 dark:bg-dark-800 text-gray-900 dark:text-white'
                     : 'bg-gradient-to-r from-primary-500 to-primary-700 text-white'
                 }`}>
-                  <p className="text-sm leading-relaxed">{message.text}</p>
+                  {message.sender === 'ai' ? (
+                    <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0 prose-headings:my-2">
+                      <ReactMarkdown>{message.text}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-sm leading-relaxed">{message.text}</p>
+                  )}
                   <p className={`text-xs mt-1 ${
                     message.sender === 'ai'
                       ? 'text-gray-500 dark:text-gray-400'
