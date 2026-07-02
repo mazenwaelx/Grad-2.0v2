@@ -529,6 +529,30 @@ class ApiService {
     });
   }
 
+  async renameAIChat(chatId: string, title: string): Promise<void> {
+    // Call Python backend directly since C# backend doesn't proxy this endpoint yet
+    const pythonUrl = 'http://localhost:8000/api/chat';
+    const token = this.getAuthToken();
+    
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${pythonUrl}/${chatId}/title`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to rename chat');
+    }
+  }
+
   async uploadAIFile(file: File): Promise<any> {
     const formData = new FormData();
     formData.append('file', file);

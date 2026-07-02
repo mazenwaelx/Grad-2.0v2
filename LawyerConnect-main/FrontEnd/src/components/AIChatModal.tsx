@@ -209,6 +209,16 @@ export default function AIChatModal({ onClose }: AIChatModalProps) {
       
       setMessages(prev => [...prev, aiMessage])
 
+      // Auto-update chat title with the user's question (first 50 chars)
+      try {
+        const title = userMessage.text.substring(0, 50) + (userMessage.text.length > 50 ? '...' : '');
+        await apiService.renameAIChat(chatId, title);
+        console.log('Chat title auto-updated to:', title);
+      } catch (error) {
+        console.error('Error auto-updating chat title:', error);
+        // Don't fail the whole message send if rename fails
+      }
+
       // Check if files were removed by the AI
       if (response.filesRemoved) {
         await loadUploadedFiles()

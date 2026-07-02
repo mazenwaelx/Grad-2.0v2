@@ -69,12 +69,14 @@ const useChat = () => {
 
   const loadChat = useCallback(
     async (chatId) => {
+      console.log('[useChat] Loading chat:', chatId);
       setUploadedFiles([]);
       setReplyToMessage(null);
       setCurrentChatId(chatId);
 
       try {
         const data = await api.getMessages(chatId);
+        console.log('[useChat] Loaded messages:', data.messages?.length || 0);
         const loaded = data.messages || [];
 
         let userIdx = 0;
@@ -87,12 +89,17 @@ const useChat = () => {
           return msg;
         });
         setMessages(withFiles);
+        console.log('[useChat] Messages set successfully');
       } catch (error) {
-        console.error('Error loading messages:', error);
-        setMessages([]);
+        console.error('[useChat] Error loading messages:', error);
+        // Don't clear messages on error - keep existing state
+        // Only clear if it's a new chat with no messages
+        if (messages.length === 0) {
+          setMessages([]);
+        }
       }
     },
-    [getFilesForMessage],
+    [getFilesForMessage, messages.length],
   );
 
   const sendMessage = useCallback(
@@ -317,6 +324,7 @@ const useChat = () => {
   // ── Initial chat load ───────────────────────────────────────
   useEffect(() => {
     if (!currentUser?.email) {
+      console.log('[useChat] No user email, clearing chat data');
       // Clear all chat data when user logs out or email changes
       setChats([]);
       setCurrentChatId(null);
@@ -328,23 +336,24 @@ const useChat = () => {
 
     const loadUserChats = async () => {
       try {
-        console.log('Loading chats for user:', currentUser.email);
+        console.log('[useChat] Loading chats for user:', currentUser.email);
         const data = await api.getChats(currentUser.email);
         const loaded = data.chats || [];
+        console.log('[useChat] Loaded chats:', loaded.length);
         
-        // Filter out empty chats (chats with no messages)
-        const nonEmptyChats = loaded.filter(chat => 
-          chat.messages && chat.messages.length > 0
-        );
-        
-        setChats(nonEmptyChats);
+        // Don't filter chats - API returns all chats for user
+        // The messages are loaded separately when chat is selected
+        setChats(loaded);
 
         const urlChatId = searchParams.get('chatId');
         if (urlChatId) {
-          const existing = nonEmptyChats.find((c) => c.chat_id === urlChatId);
+          console.log('[useChat] Chat ID from URL:', urlChatId);
+          const existing = loaded.find((c) => c.chat_id === urlChatId);
           if (existing) {
+            console.log('[useChat] Loading existing chat from URL');
             loadChat(urlChatId);
           } else {
+            console.log('[useChat] Creating new chat from URL');
             const newChat = {
               chat_id: urlChatId,
               user_email: currentUser.email,
@@ -356,13 +365,15 @@ const useChat = () => {
             setCurrentChatId(urlChatId);
             setMessages([]);
           }
-        } else if (nonEmptyChats.length === 0) {
+        } else if (loaded.length === 0) {
+          console.log('[useChat] No existing chats, creating new');
           createNewChat();
         } else {
-          loadChat(nonEmptyChats[0].chat_id);
+          console.log('[useChat] Loading first chat:', loaded[0].chat_id);
+          loadChat(loaded[0].chat_id);
         }
       } catch (error) {
-        console.error('Error loading chats:', error);
+        console.error('[useChat] Error loading chats:', error);
         setChats([]);
         createNewChat();
       }

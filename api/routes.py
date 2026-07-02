@@ -55,7 +55,12 @@ async def health():
 @router.get("/chats/{user_email}")
 def get_chats(user_email: str):
     user = _get_user_or_404(user_email)
-    return {"chats": get_user_chats(user["Id"])}
+    print(f"[DEBUG] get_chats - Email: {user_email}, Resolved User ID: {user['Id']}")
+    chats = get_user_chats(user["Id"])
+    print(f"[DEBUG] get_chats - Found {len(chats)} chats for user {user['Id']}")
+    for chat in chats:
+        print(f"[DEBUG]   - Chat: {chat.get('chat_id')} | Title: {chat.get('title')}")
+    return {"chats": chats}
 
 
 @router.get("/messages/{chat_id}")
@@ -68,6 +73,8 @@ def chat(request: Request, body: ChatRequest):
     try:
         state = _get_state(request)
         uid = _resolve_user_id(body.user_id)
+        
+        print(f"[DEBUG] chat - Raw user_id: {body.user_id}, Resolved: {uid}, Chat ID: {body.chat_id}")
 
         files_before = state.file_processor.list_uploaded_files(body.chat_id) if state.file_processor else []
 

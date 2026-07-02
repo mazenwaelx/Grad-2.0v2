@@ -62,8 +62,16 @@ class AgentService:
     def get_or_create(self, user_id: str, chat_id: str) -> LangChainReActAgent:
         self._ensure_retriever()
         create_chat(chat_id, user_id)
+        
+        # Check if agent already exists for this user-chat pair
+        key = f"{user_id}_{chat_id}"
+        if key in self._s.user_agents:
+            print(f"[INFO] Reusing existing agent for {key}")
+            return self._s.user_agents[key]
+        
+        # Create new agent and cache it
+        print(f"[INFO] Creating new agent for {key}")
         history = DatabaseChatMessageHistory(chat_id)
-
 
         agent = LangChainReActAgent(
             llm=init_llm(MODEL_NAME),
@@ -74,7 +82,10 @@ class AgentService:
             log_callback=lambda msg: None,
             max_iterations=10, verbose=True,
         )
-        self._s.user_histories[f"{user_id}_{chat_id}"] = history
+        
+        # Cache both agent and history
+        self._s.user_agents[key] = agent
+        self._s.user_histories[key] = history
         return agent
 
     def _ensure_retriever(self) -> None:

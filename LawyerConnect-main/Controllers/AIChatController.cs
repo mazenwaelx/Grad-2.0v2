@@ -25,11 +25,12 @@ namespace LawyerConnect.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-                    return Unauthorized(new { message = "User ID not found in token" });
+                // Use email as user ID to match React frontend
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrWhiteSpace(userEmail))
+                    return Unauthorized(new { message = "User email not found in token" });
 
-                var response = await _aiChatService.SendMessageAsync(request.Message, userId.ToString(), request.ChatId);
+                var response = await _aiChatService.SendMessageAsync(request.Message, userEmail, request.ChatId);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -45,11 +46,12 @@ namespace LawyerConnect.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-                    return Unauthorized(new { message = "User ID not found in token" });
+                // Use email as user ID to match React frontend
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrWhiteSpace(userEmail))
+                    return Unauthorized(new { message = "User email not found in token" });
 
-                var chats = await _aiChatService.GetUserChatsAsync(userId.ToString());
+                var chats = await _aiChatService.GetUserChatsAsync(userEmail);
                 return Ok(chats);
             }
             catch (Exception ex)
@@ -65,11 +67,12 @@ namespace LawyerConnect.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-                    return Unauthorized(new { message = "User ID not found in token" });
+                // Use email as user ID to match React frontend
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrWhiteSpace(userEmail))
+                    return Unauthorized(new { message = "User email not found in token" });
 
-                var messages = await _aiChatService.GetChatMessagesAsync(chatId, userId.ToString());
+                var messages = await _aiChatService.GetChatMessagesAsync(chatId, userEmail);
                 return Ok(messages);
             }
             catch (Exception ex)
@@ -85,11 +88,12 @@ namespace LawyerConnect.Controllers
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrWhiteSpace(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
-                    return Unauthorized(new { message = "User ID not found in token" });
+                // Use email as user ID to match React frontend
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrWhiteSpace(userEmail))
+                    return Unauthorized(new { message = "User email not found in token" });
 
-                await _aiChatService.DeleteChatAsync(chatId, userId.ToString());
+                await _aiChatService.DeleteChatAsync(chatId, userEmail);
                 return NoContent();
             }
             catch (Exception ex)
