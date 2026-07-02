@@ -1,0 +1,21 @@
+═══════════════════════════════════════════════════════════════
+                    📍 PLACE YOUR LOGO HERE
+═══════════════════════════════════════════════════════════════
+
+Required file: estasheer-logo.png
+
+Current directory: 
+d:\grad proj\New folder\Grad 2.0\react-frontend\src\assets\images\
+
+Instructions:
+1. Save your logo image as PNG format
+2. Name it: estasheer-logo.png
+3. Copy it to THIS folder
+4. Restart your dev server (npm start)
+
+Your logo will appear on:
+✓ Chat page (empty state)
+✓ Login page
+✓ Signup page
+
+═══════════════════════════════════════════════════════════════

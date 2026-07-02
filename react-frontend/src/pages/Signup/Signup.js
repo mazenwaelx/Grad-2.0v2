@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import AuthLayout from '../../components/AuthLayout';
 import ThemeToggle from '../../components/ThemeToggle';
 import { register as apiRegister } from '../../services/api';
+import estasheerLogo from '../../assets/images/estasheer-logo.png';
 import './Signup.css';
 
 const Signup = () => {
@@ -75,9 +76,11 @@ const Signup = () => {
       
       <div className="auth-box">
         <div className="auth-header">
-          <div className="logo">⚖️</div>
-          <h1>Estasher <span className="arabic">استشير</span></h1>
-          <p>Create your account</p>
+          <div className="logo">
+            <img src={estasheerLogo} alt="Estasheer Logo" />
+          </div>
+          <h1>Estasheer <span className="arabic">استشير</span></h1>
+          <p>إنشاء حساب جديد</p>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -85,21 +88,21 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Full Name</label>
+            <label>الاسم الكامل</label>
             <div className="input-wrapper">
               <input 
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required 
-                placeholder="Ahmed Mohamed"
+                placeholder="أحمد محمد"
               />
               <span className="input-icon">👤</span>
             </div>
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label>البريد الإلكتروني</label>
             <div className="input-wrapper">
               <input 
                 type="email" 
@@ -113,7 +116,7 @@ const Signup = () => {
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label>كلمة المرور</label>
             <div className="input-wrapper">
               <input 
                 type="password" 
@@ -134,7 +137,7 @@ const Signup = () => {
           </div>
 
           <div className="form-group">
-            <label>Confirm Password</label>
+            <label>تأكيد كلمة المرور</label>
             <div className="input-wrapper">
               <input 
                 type="password" 
@@ -153,12 +156,12 @@ const Signup = () => {
             className={`btn-primary ${loading ? 'loading' : ''} ${success ? 'success' : ''}`}
             disabled={loading}
           >
-            {success ? '✓ Success!' : loading ? '' : 'Create Account'}
+            {success ? '✓ تم بنجاح!' : loading ? '' : 'إنشاء حساب'}
           </button>
         </form>
 
         <div className="auth-footer">
-          Already have an account? <Link to="/login">Login</Link>
+          لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
         </div>
       </div>
     </AuthLayout>

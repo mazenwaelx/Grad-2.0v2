@@ -102,7 +102,7 @@ const InputArea = ({
           className={`file-btn ${uploading ? 'uploading' : ''}`}
           onClick={handleFileClick}
           disabled={uploading}
-          title="Upload file (PDF, DOCX, Excel)"
+          title="رفع ملف (PDF, DOCX, Excel)"
         >
           {uploading ? '⏳' : '📎'}
         </button>
@@ -112,7 +112,7 @@ const InputArea = ({
           value={message}
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about Egyptian labor law..."
+          placeholder="اسأل عن قانون العمل المصري..."
           rows="1"
         />
 
@@ -138,7 +138,7 @@ const InputArea = ({
               }}
             />
           )}
-          Send 🚀
+          إرسال 🚀
         </button>
       </div>
 

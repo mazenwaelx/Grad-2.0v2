@@ -1,4 +1,5 @@
 import './EmptyState.css';
+import estasheerLogo from '../../../assets/images/estasheer-logo.png';
 
 const SUGGESTIONS = [
   { icon: '⏱️', text: 'ما هي ساعات العمل القانونية في مصر؟' },
@@ -19,7 +20,9 @@ const CAPABILITIES = [
 const EmptyState = ({ onSuggestionClick }) => {
   return (
     <div className="empty-state">
-      <div className="empty-state-icon">⚖️</div>
+      <div className="empty-state-logo">
+        <img src={estasheerLogo} alt="Estasheer Logo" />
+      </div>
       <h3>استشير <span className="arabic">مساعدك القانوني المصري</span></h3>
       <p className="subtitle">مساعدك الموثوق في قانون العمل المصري</p>
 

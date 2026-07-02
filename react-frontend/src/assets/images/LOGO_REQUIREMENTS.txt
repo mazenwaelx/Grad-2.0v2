@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════════════
+            🎯 LOGO IMAGE REQUIREMENTS - UPDATED
+═══════════════════════════════════════════════════════════════
+
+WHAT TO EXTRACT FROM YOUR ORIGINAL IMAGE:
+------------------------------------------
+✓ KEEP:   The golden scales symbol
+✓ KEEP:   The blue 'E' letter (if integrated with scales)
+✗ REMOVE: "Estasheer" text at the bottom
+✗ REMOVE: White/colored background (make it transparent)
+✗ REMOVE: Any tagline or additional text
+
+TECHNICAL REQUIREMENTS:
+-----------------------
+Format:     PNG with transparency (alpha channel)
+Size:       400-600px width (high resolution)
+Background: FULLY TRANSPARENT
+Content:    Symbol only, no text
+Filename:   estasheer-logo.png (exact name)
+
+QUICK STEPS:
+------------
+1. Use Remove.bg or Photopea (free online tools)
+2. Remove the white background
+3. Crop to just the scales + 'E' symbol (remove text)
+4. Export as PNG with transparency
+5. Save as: estasheer-logo.png
+6. Place in THIS folder
+
+CSS UPDATES APPLIED:
+--------------------
+✓ NO floating animation (logo stays still)
+✓ Smaller, cleaner size
+✓ Transparent background support
+✓ Professional appearance
+
+PLACE FINAL FILE HERE:
+----------------------
+d:\grad proj\New folder\Grad 2.0\react-frontend\src\assets\images\estasheer-logo.png
+
+═══════════════════════════════════════════════════════════════
+              See LOGO_EXTRACTION_GUIDE.md for details
+═══════════════════════════════════════════════════════════════

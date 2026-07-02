@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import AuthLayout from '../../components/AuthLayout';
 import ThemeToggle from '../../components/ThemeToggle';
 import { login as apiLogin } from '../../services/api';
+import estasheerLogo from '../../assets/images/estasheer-logo.png';
 import './Login.css';
 
 const Login = () => {
@@ -41,16 +42,18 @@ const Login = () => {
       
       <div className="auth-box">
         <div className="auth-header">
-          <div className="logo">⚖️</div>
-          <h1>Estasher <span className="arabic">استشير</span></h1>
-          <p>مساعدك الموثوق في قانون العمل المصري</p>
+          <div className="logo">
+            <img src={estasheerLogo} alt="Estasheer Logo" />
+          </div>
+          <h1>Estasheer <span className="arabic">استشير</span></h1>
+          <p>مستشارك القانوني الموثوق في قانون العمل المصري</p>
         </div>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>البريد الإلكتروني</label>
             <div className="input-wrapper">
               <input 
                 type="email" 
@@ -64,7 +67,7 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label>كلمة المرور</label>
             <div className="input-wrapper">
               <input 
                 type="password" 
@@ -82,12 +85,12 @@ const Login = () => {
             className={`btn-primary ${loading ? 'loading' : ''} ${success ? 'success' : ''}`}
             disabled={loading}
           >
-            {success ? '✓ Welcome Counsel!' : loading ? '' : 'Login'}
+            {success ? '✓ مرحباً!' : loading ? '' : 'تسجيل الدخول'}
           </button>
         </form>
 
         <div className="auth-footer">
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          ليس لديك حساب؟ <Link to="/signup">إنشاء حساب</Link>
         </div>
       </div>
     </AuthLayout>

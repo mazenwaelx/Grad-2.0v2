@@ -5,13 +5,34 @@
   animation: fadeIn 1s ease;
 }
 
-.empty-state-icon {
-  font-size: 80px;
-  margin-bottom: 25px;
-  animation: float 3s ease-in-out infinite, iconGlow 2s ease-in-out infinite, balanceScalesLarge 4s ease-in-out infinite;
-  filter: drop-shadow(0 10px 20px rgba(212, 175, 55, 0.3));
+.empty-state-logo {
+  margin-bottom: -20px;
   position: relative;
-  transform-origin: center top;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.5));
+}
+
+.empty-state-logo img {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
+/* Responsive sizing for logo */
+@media (max-width: 768px) {
+  .empty-state-logo img {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .empty-state-logo img {
+    max-width: 200px;
+  }
 }
 
 .empty-state h3 {

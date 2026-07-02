@@ -12,7 +12,7 @@ const Sidebar = React.memo(({
 }) => {
   const handleRename = (chatId, currentTitle, e) => {
     e.stopPropagation();
-    const newTitle = prompt('Enter new chat title:', currentTitle);
+    const newTitle = prompt('أدخل عنوان المحادثة الجديد:', currentTitle);
     if (newTitle && newTitle.trim() !== '' && newTitle !== currentTitle) {
       onRenameChat(chatId, newTitle);
     }
@@ -26,12 +26,12 @@ const Sidebar = React.memo(({
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h2>⚖️ Estasher <span className="arabic">استشير</span></h2>
+        <h2>⚖️ Estasheer <span className="arabic">استشير</span></h2>
         <div className="user-info">
           <span>{userName}</span>
         </div>
         <button className="new-chat-btn" onClick={onNewChat}>
-          ✨ New Chat
+          ✨ محادثة جديدة
         </button>
       </div>
 
@@ -53,14 +53,14 @@ const Sidebar = React.memo(({
               <button 
                 className="rename-chat-btn"
                 onClick={(e) => handleRename(chat.chat_id, chat.title, e)}
-                title="Rename"
+                title="إعادة تسمية"
               >
                 ✏️
               </button>
               <button 
                 className="delete-chat-btn"
                 onClick={(e) => handleDelete(chat.chat_id, e)}
-                title="Delete"
+                title="حذف"
               >
                 🗑️
               </button>
@@ -74,7 +74,7 @@ const Sidebar = React.memo(({
           className="website-btn" 
           onClick={() => window.location.href = 'http://localhost:3002'}
         >
-          🏠 Back to Website
+          🏠 العودة للموقع
         </button>
       </div>
     </div>

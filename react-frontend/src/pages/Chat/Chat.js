@@ -48,7 +48,7 @@ const Chat = () => {
       <div className="main-chat">
         <div className="chat-header">
           <h3 id="currentChatTitle">
-            {currentChat?.title || 'Egyptian Legal Assistant'}
+            {currentChat?.title || 'Estasheer - استشير'}
           </h3>
           <div className="header-actions">
             <ThemeToggle />
@@ -56,7 +56,7 @@ const Chat = () => {
               className="rename-current-btn"
               onClick={() => {
                 const newTitle = prompt(
-                  'Enter new chat title:',
+                  'أدخل عنوان المحادثة الجديد:',
                   currentChat?.title,
                 );
                 if (newTitle) {
@@ -64,7 +64,7 @@ const Chat = () => {
                 }
               }}
             >
-              ✏️ Rename
+              ✏️ إعادة تسمية
             </button>
           </div>
         </div>

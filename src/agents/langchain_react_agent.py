@@ -200,7 +200,7 @@ class LangChainReActAgent:
             tools=self.tools,
             verbose=self.verbose,
             max_iterations=self.max_iterations,
-            handle_parsing_errors=self._handle_parsing_error,
+            handle_parsing_errors=True,
             return_intermediate_steps=True,
             callbacks=callbacks,
             max_execution_time=180,

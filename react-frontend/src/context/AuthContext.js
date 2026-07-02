@@ -23,7 +23,17 @@ export const AuthProvider = ({ children }) => {
     useLocalStorage('currentUser', null);
 
   const login = (user) => setCurrentUser(user);
-  const logout = () => removeCurrentUser();
+  
+  const logout = () => {
+    // Clear user data
+    removeCurrentUser();
+    
+    // Clear message files from localStorage
+    localStorage.removeItem('messageFiles');
+    
+    // Clear any other user-specific data
+    console.log('User logged out, localStorage cleared');
+  };
 
   return (
     <AuthContext.Provider value={{ currentUser, login, logout }}>

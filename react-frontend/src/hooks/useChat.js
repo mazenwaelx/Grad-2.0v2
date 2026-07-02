@@ -153,17 +153,20 @@ const useChat = () => {
         };
         setMessages((prev) => [...prev, assistantMessage]);
 
-        // Auto-title
-        const chat = chats.find((c) => c.chat_id === currentChatId);
-        if (chat && chat.title === 'New Chat') {
-          const title =
-            displayMessage.substring(0, 30) +
-            (displayMessage.length > 30 ? '...' : '');
+        // Auto-update chat title with last question
+        const title =
+          displayMessage.substring(0, 50) +
+          (displayMessage.length > 50 ? '...' : '');
+        
+        try {
+          await api.renameChat(currentChatId, title);
           setChats((prev) =>
             prev.map((c) =>
               c.chat_id === currentChatId ? { ...c, title } : c,
             ),
           );
+        } catch (error) {
+          console.error('Error auto-updating chat title:', error);
         }
       } catch (error) {
         console.error('Error sending message:', error);
@@ -252,7 +255,7 @@ const useChat = () => {
 
   const deleteChat = useCallback(
     async (chatId) => {
-      if (!window.confirm('Are you sure you want to delete this chat?')) return;
+      if (!window.confirm('هل أنت متأكد من حذف هذه المحادثة؟')) return;
 
       try {
         await api.deleteChat(currentUser.email, chatId);
@@ -274,7 +277,7 @@ const useChat = () => {
         }
       } catch (error) {
         console.error('Error deleting chat:', error);
-        alert('Failed to delete chat');
+        alert('فشل حذف المحادثة');
       }
     },
     [
@@ -299,7 +302,7 @@ const useChat = () => {
       );
     } catch (error) {
       console.error('Error renaming chat:', error);
-      alert('Failed to rename chat');
+      alert('فشل إعادة تسمية المحادثة');
     }
   }, []);
 
@@ -313,18 +316,32 @@ const useChat = () => {
 
   // ── Initial chat load ───────────────────────────────────────
   useEffect(() => {
-    if (!currentUser?.email) return;
+    if (!currentUser?.email) {
+      // Clear all chat data when user logs out or email changes
+      setChats([]);
+      setCurrentChatId(null);
+      setMessages([]);
+      setUploadedFiles([]);
+      setReplyToMessage(null);
+      return;
+    }
 
     const loadUserChats = async () => {
       try {
         console.log('Loading chats for user:', currentUser.email);
         const data = await api.getChats(currentUser.email);
         const loaded = data.chats || [];
-        setChats(loaded);
+        
+        // Filter out empty chats (chats with no messages)
+        const nonEmptyChats = loaded.filter(chat => 
+          chat.messages && chat.messages.length > 0
+        );
+        
+        setChats(nonEmptyChats);
 
         const urlChatId = searchParams.get('chatId');
         if (urlChatId) {
-          const existing = loaded.find((c) => c.chat_id === urlChatId);
+          const existing = nonEmptyChats.find((c) => c.chat_id === urlChatId);
           if (existing) {
             loadChat(urlChatId);
           } else {
@@ -339,10 +356,10 @@ const useChat = () => {
             setCurrentChatId(urlChatId);
             setMessages([]);
           }
-        } else if (loaded.length === 0) {
+        } else if (nonEmptyChats.length === 0) {
           createNewChat();
         } else {
-          loadChat(loaded[0].chat_id);
+          loadChat(nonEmptyChats[0].chat_id);
         }
       } catch (error) {
         console.error('Error loading chats:', error);
