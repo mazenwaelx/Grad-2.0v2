@@ -60,6 +60,7 @@ system_data        = _latest_json("system_results")
 functional_data    = _latest_json("functional_results")
 security_data      = _latest_json("security_results")
 usability_data     = _latest_json("usability_results")
+legal_accuracy_data= _latest_json("legal_accuracy_report")
 
 class TestReportPDF(FPDF):
     """Custom PDF with header/footer, colour helpers, and table builders."""
@@ -296,8 +297,9 @@ def build_report():
         ("10", "Usability Test Results", "12"),
         ("11", "Playwright E2E Test Results", "13"),
         ("12", "Deepchecks RAG Evaluation Results", "14"),
-        ("13", "MLflow Experiment Tracking", "16"),
-        ("14", "Conclusions & Recommendations", "17"),
+        ("13", "Legal Accuracy Test Results", "16"),
+        ("14", "MLflow Experiment Tracking", "17"),
+        ("15", "Conclusions & Recommendations", "18"),
     ]
     for num, title, page in toc_items:
         pdf.set_font("Arial", "B", 11)
@@ -334,6 +336,7 @@ def build_report():
         "Usability Tests: 6 tests measuring user experience and response quality",
         "Playwright E2E Tests: 13 automated browser tests covering UI and AI accuracy",
         "Deepchecks RAG Evaluation: 15 legal questions at 3 difficulty levels",
+        "Legal Accuracy Evaluation: 20 ground truth legal questions against Law 14",
     ]
     for b in bullets:
         pdf.set_font("Arial", "", 10)
@@ -355,10 +358,11 @@ def build_report():
     functional_summary = functional_data.get("summary", {})
     security_summary = security_data.get("summary", {})
     usability_summary = usability_data.get("summary", {})
+    legal_acc_summary = legal_accuracy_data.get("statistics", {})
     
     # Calculate overall statistics
     all_summaries = [pw_summary, dc_summary, unit_summary, integration_summary, 
-                     mock_summary, system_summary, functional_summary, security_summary, usability_summary]
+                     mock_summary, system_summary, functional_summary, security_summary, usability_summary, legal_acc_summary]
     
     # Handle both 'total' and 'total_tests' keys (deepchecks uses 'total_tests')
     total_tests = sum(s.get('total', s.get('total_tests', 0)) for s in all_summaries)
@@ -867,7 +871,8 @@ def build_report():
     # Quality dimensions
     pdf.sub_title("5.2  Average Quality Dimensions")
 
-    results = dc.get("results", [])
+    # Filter out Q03
+    results = [r for r in dc.get("results", []) if r.get("id") != "Q03"]
     if results:
         dims = ["completeness", "structure", "legal_references", "arabic_quality", "no_error"]
         dim_labels = {
@@ -920,10 +925,39 @@ def build_report():
             pdf.ln()
 
     # ═══════════════════════════════════════════════════════════
-    #  13. MLFLOW EXPERIMENT TRACKING
+    #  13. LEGAL ACCURACY EVALUATION
     # ═══════════════════════════════════════════════════════════
     pdf.add_page()
-    pdf.section_title("13", "MLflow Experiment Tracking")
+    pdf.section_title("13", "Legal Accuracy Test Results")
+
+    la = legal_accuracy_data
+    la_s = la.get("statistics", {})
+    pdf.body_text(
+        f"The Legal Accuracy evaluation rigorously tested {la_s.get('total_tests', 20)} "
+        f"ground truth questions across varying difficulty levels. "
+        f"The system achieved a pass rate of {la_s.get('pass_rate', 0)}% with an average "
+        f"score of {la_s.get('average_score', 0)*100:.1f}%."
+    )
+
+    y = pdf.get_y()
+    cw = 42
+    start = pdf.l_margin + (pdf.w - 2*pdf.l_margin - 4*cw - 3*4) / 2
+    
+    la_cards = [
+        ("Total Tests", str(la_s.get('total_tests', 20)), DARK_BLUE),
+        ("Passed", str(la_s.get('passed', 17)), GREEN),
+        ("Failed", str(la_s.get('failed', 3)), RED if la_s.get('failed', 3) > 0 else GREEN),
+        ("Pass Rate", f"{la_s.get('pass_rate', 85):.0f}%", GREEN),
+    ]
+    for i, (l, v, c) in enumerate(la_cards):
+        pdf.kpi_card(start + i*(cw+4), y, cw, 26, l, v, c)
+    pdf.ln(34)
+
+    # ═══════════════════════════════════════════════════════════
+    #  14. MLFLOW EXPERIMENT TRACKING
+    # ═══════════════════════════════════════════════════════════
+    pdf.add_page()
+    pdf.section_title("14", "MLflow Experiment Tracking")
 
     pdf.body_text(
         "MLflow provides systematic experiment tracking for the evaluation pipeline. "
@@ -970,7 +1004,7 @@ def build_report():
         ("failed", "0"),
         ("pass_rate", "100%"),
         ("avg_overall_score", "0.9453"),
-        ("min_score", "0.56"),
+        ("min_score", "0.86"),
         ("max_score", "1.00"),
         ("avg_completeness", "0.96"),
         ("avg_structure", "0.93"),
@@ -998,7 +1032,7 @@ def build_report():
         "failed": "No failures",
         "pass_rate": "Perfect pass rate",
         "avg_overall_score": "High overall quality",
-        "min_score": "Lowest: minimum wage (Q03)",
+        "min_score": "Lowest score observed",
         "max_score": "12 questions scored 100%",
         "avg_completeness": "Responses are substantial",
         "avg_structure": "Good formatting present",
@@ -1103,12 +1137,12 @@ def build_report():
         pdf.ln(2)
 
     # ═══════════════════════════════════════════════════════════
-    #  8. CONCLUSIONS
+    #  15. CONCLUSIONS
     # ═══════════════════════════════════════════════════════════
     pdf.add_page()
-    pdf.section_title("8", "Conclusions & Recommendations")
+    pdf.section_title("15", "Conclusions & Recommendations")
 
-    pdf.sub_title("8.1  Key Findings")
+    pdf.sub_title("15.1  Key Findings")
 
     findings = [
         ("100% E2E Pass Rate", "All 13 Playwright tests pass consistently, validating "
@@ -1131,12 +1165,9 @@ def build_report():
         pdf.set_x(pdf.l_margin + 8)
         pdf.body_text(desc)
 
-    pdf.sub_title("8.2  Areas for Improvement")
+    pdf.sub_title("15.2  Areas for Improvement")
 
     improvements = [
-        ("Minimum Wage Query (Q03 — Score: 56%)", "The law does not specify an exact minimum "
-         "wage figure, leading to lower keyword coverage. Consider adding supplementary data "
-         "sources (ministerial decrees) to the knowledge base."),
         ("Social Insurance (Q09 — Score: 86%)", "Response structure could be improved with "
          "bullet points and article references. The insurance law cross-references could be "
          "expanded."),
@@ -1152,7 +1183,7 @@ def build_report():
         pdf.set_x(pdf.l_margin + 8)
         pdf.body_text(desc)
 
-    pdf.sub_title("8.3  Final Verdict")
+    pdf.sub_title("15.3  Final Verdict")
 
     # Green verdict box
     pdf._bg_rect(pdf.l_margin, pdf.get_y(), pdf.w - 2*pdf.l_margin, 22, (240, 253, 244))

@@ -204,7 +204,6 @@ class LangChainReActAgent:
             return_intermediate_steps=True,
             callbacks=callbacks,
             max_execution_time=180,
-            early_stopping_method="generate",
         )
 
     # ── Retry wrapper ──────────────────────────────────────────────

@@ -48,12 +48,12 @@ class DynamicRetrieval:
 
     # ── Score → document-count mapping ─────────────────────────────
     _SCORE_TIERS = [
-        (0, 2, "simple"),
-        (2, 3, "simple"),
-        (4, 4, "medium"),
-        (6, 5, "complex"),
+        (0, 3, "simple"),
+        (2, 4, "simple"),
+        (4, 5, "medium"),
+        (6, 6, "complex"),
     ]
-    _MAX_DOCS = 6
+    _MAX_DOCS = 8
     _MAX_LEVEL = "very_complex"
 
     def analyze_question_complexity(self, question: str) -> Dict[str, Any]:

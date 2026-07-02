@@ -21,12 +21,12 @@ class RetrievalSettings(BaseSettings):
     )
     chunk_overlap: int = Field(default=200)
     top_k_documents: int = Field(
-        default=6,
-        description="Default fallback (now using dynamic retrieval)",
+        default=10,
+        description="Increased from 6 to 10 for more comprehensive legal answers",
     )
     enable_dynamic_retrieval: bool = Field(default=True)
-    min_documents: int = Field(default=2)
-    max_documents: int = Field(default=6)
+    min_documents: int = Field(default=3)
+    max_documents: int = Field(default=10)
 
 
 class AppSettings(BaseSettings):

@@ -1,0 +1,822 @@
+{
+  "results": [
+    {
+      "question": "ما هي مدة الإجازة السنوية للعامل؟",
+      "gt_id": "GT_001",
+      "legally_accurate": true,
+      "accuracy_score": 0.92,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['124']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.20491803278688525,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 92.0%)",
+      "response_time": 9.52,
+      "difficulty": "simple",
+      "ai_answer_preview": "حسب المادة 124 من قانون العمل المصري، يستحق العامل إجازة سنوية بأجر، لا يدخل في حسابها أيام عطلات الأعياد والمناسبات الرسمية والراحة الأسبوعية، وذلك على الوجه الآتي:\n\n1.  **خمسة عشر يوماً** في السنة ا..."
+    },
+    {
+      "question": "كم عدد ساعات العمل اليومية؟",
+      "gt_id": "GT_002",
+      "legally_accurate": true,
+      "accuracy_score": 0.911,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['117']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.10569105691056911,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.1%)",
+      "response_time": 4.65,
+      "difficulty": "simple",
+      "ai_answer_preview": "حسب المادة 117 من قانون العمل المصري، لا يجوز تشغيل العامل تشغيلاً فعلياً أكثر من ثماني ساعات في اليوم، أو ثمان وأربعين ساعة في الأسبوع. ولا تدخل في هذه الساعات الفترات المخصصة لتناول الطعام والراحة. ..."
+    },
+    {
+      "question": "ما هي شروط عقد العمل؟",
+      "gt_id": "GT_003",
+      "legally_accurate": true,
+      "accuracy_score": 0.917,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['89']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.16666666666666666,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.7%)",
+      "response_time": 8.1,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب المادة 89 من قانون العمل المصري، يلتزم صاحب العمل بتحرير عقد العمل كتابة باللغة العربية من أربع نسخ، ويجب توزيعها كالتالي:\n*   يحتفظ صاحب العمل بنسخة.\n*   تسلم نسخة للعامل.\n*   تودع النسخة الثالثة..."
+    },
+    {
+      "question": "ما هي إجراءات الفصل التعسفي؟",
+      "gt_id": "GT_004",
+      "legally_accurate": false,
+      "accuracy_score": 0.636,
+      "checks": {
+        "key_facts": {
+          "score": 0.3333333333333333,
+          "missing": [
+            "إنهاء بدون سبب مشروع",
+            "تعويض أجر شهرين عن كل سنة"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 148 (من المواد الصحيحة: ['148', '165'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.023255813953488372,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "إنهاء بدون سبب مشروع",
+        "تعويض أجر شهرين عن كل سنة"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 63.6%)\n\n**المشاكل:**\n• ناقص 2 من الحقائق الأساسية",
+      "response_time": 13.06,
+      "difficulty": "complex",
+      "ai_answer_preview": "حسب المادة 148 من قانون العمل المصري، يكون الاختصاص بتوقيع جزاء الفصل من العمل للمحكمة العمالية المختصة. ولا يجوز فصل العامل إلا إذا ارتكب خطأ جسيمًا.\n\n**يعتبر من قبيل الخطأ الجسيم الحالات الآتية:**\n1..."
+    },
+    {
+      "question": "ما هي حقوق المرأة العاملة في قانون العمل؟",
+      "gt_id": "GT_005",
+      "legally_accurate": false,
+      "accuracy_score": 0.705,
+      "checks": {
+        "key_facts": {
+          "score": 0.5,
+          "missing": [
+            "إجازة رعاية طفل حتى سنتين",
+            "تخفيض ساعة عمل من الشهر السادس للحمل"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 53 (من المواد الصحيحة: ['53', '54', '55', '57', '59'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.04830917874396135,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "إجازة رعاية طفل حتى سنتين",
+        "تخفيض ساعة عمل من الشهر السادس للحمل"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 70.5%)\n\n**المشاكل:**\n• ناقص 2 من الحقائق الأساسية",
+      "response_time": 5.48,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب المادة 53 من قانون العمل المصري، تسري على النساء العاملات جميع الأحكام المنظمة لتشغيل العمال دون تمييز. ويستحق جميع العاملين من الذكور والإناث أجرًا متساويًا عن العمل ذي القيمة المتساوية، ويشمل ذل..."
+    },
+    {
+      "question": "ما هي فترة الراحة الأسبوعية للعامل؟",
+      "gt_id": "GT_006",
+      "legally_accurate": true,
+      "accuracy_score": 0.917,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['120']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.1652892561983471,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.7%)",
+      "response_time": 10.88,
+      "difficulty": "simple",
+      "ai_answer_preview": "حسب المادة 120 من قانون العمل المصري، يجب تنظيم العمل بالمنشأة بحيث يحصل كل عامل على راحة أسبوعية لا تقل عن **أربع وعشرين ساعة كاملة** بعد **ستة أيام عمل متصلة** على الأكثر. وفي جميع الأحوال، تكون الر..."
+    },
+    {
+      "question": "ما هي أنواع الإجازات المتاحة للعامل؟",
+      "gt_id": "GT_007",
+      "legally_accurate": true,
+      "accuracy_score": 0.909,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 124 (من المواد الصحيحة: ['124', '125', '126', '128', '131'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.08936170212765958,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 90.9%)",
+      "response_time": 13.2,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب قانون العمل المصري، توجد عدة أنواع من الإجازات المتاحة للعامل، وهي كالتالي:\n\n1.  **الإجازة السنوية:**\n    *   **حسب المادة 124 من قانون العمل المصري،** يستحق العامل إجازة سنوية بأجر، لا يدخل في حس..."
+    },
+    {
+      "question": "ما الفرق بين عقد العمل محدد المدة وغير محدد المدة؟",
+      "gt_id": "GT_008",
+      "legally_accurate": true,
+      "accuracy_score": 0.908,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 87 (من المواد الصحيحة: ['87', '88', '154', '156', '164'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.08196721311475409,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 90.8%)",
+      "response_time": 13.41,
+      "difficulty": "complex",
+      "ai_answer_preview": "حسب قانون العمل المصري، يختلف عقد العمل محدد المدة عن عقد العمل غير محدد المدة في عدة جوانب رئيسية تتعلق بالإبرام والمدة والإنهاء، وذلك على النحو التالي:\n\n1.  **عقد العمل محدد المدة:**\n*   **الإبرام و..."
+    },
+    {
+      "question": "ما هي حقوق العامل في الإجازة المرضية؟",
+      "gt_id": "GT_009",
+      "legally_accurate": true,
+      "accuracy_score": 0.912,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['131']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.11811023622047244,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.2%)",
+      "response_time": 6.27,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب قانون العمل المصري، حقوق العامل في الإجازة المرضية مفصلة كالتالي:\n\n1.  **الحق في الإجازة المرضية والتعويض (حسب المادة 131 من قانون العمل المصري):**\n*   للعامل الذي يثبت مرضه أو إصابته على نحو يحول..."
+    },
+    {
+      "question": "ما هي قواعد السلامة والصحة المهنية؟",
+      "gt_id": "GT_010",
+      "legally_accurate": false,
+      "accuracy_score": 0.25,
+      "checks": {
+        "key_facts": {
+          "score": 0.0,
+          "missing": [
+            "توفير وسائل السلامة",
+            "بيئة عمل آمنة",
+            "الصحة المهنية",
+            "الوقاية من المخاطر"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ لم يتم ذكر أي مادة قانونية",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.0,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "توفير وسائل السلامة",
+        "بيئة عمل آمنة",
+        "الصحة المهنية",
+        "الوقاية من المخاطر"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 25.0%)\n\n**المشاكل:**\n• ناقص 4 من الحقائق الأساسية\n• ❌ لم يتم ذكر أي مادة قانونية",
+      "response_time": 16.33,
+      "difficulty": "medium",
+      "ai_answer_preview": "عذراً، حدث خطأ أثناء معالجة سؤالك. يرجى المحاولة مرة أخرى."
+    },
+    {
+      "question": "ما هو الحد الأدنى للأجور؟",
+      "gt_id": "GT_011",
+      "legally_accurate": false,
+      "accuracy_score": 0.705,
+      "checks": {
+        "key_facts": {
+          "score": 0.5,
+          "missing": [
+            "إلزامي"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 101 (من المواد الصحيحة: ['101', '102', '103', '104', '105'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.053691275167785234,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "إلزامي"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 70.5%)\n\n**المشاكل:**\n• ناقص 1 من الحقائق الأساسية",
+      "response_time": 9.06,
+      "difficulty": "simple",
+      "ai_answer_preview": "' in the correct place). I now have all the necessary information to construct a comprehensive answer based on the retrieved text, adhering to all the specified rules, especially starting with the art..."
+    },
+    {
+      "question": "ما هي إجراءات تسوية النزاعات العمالية؟",
+      "gt_id": "GT_012",
+      "legally_accurate": false,
+      "accuracy_score": 0.357,
+      "checks": {
+        "key_facts": {
+          "score": 0.25,
+          "missing": [
+            "المفاوضة",
+            "التوفيق",
+            "التحكيم"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ مواد خاطئة: ['149', '150']، الصحيح: ['194', '195', '196', '209', '214', '217']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.0658682634730539,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "المفاوضة",
+        "التوفيق",
+        "التحكيم"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 35.7%)\n\n**المشاكل:**\n• ناقص 3 من الحقائق الأساسية\n• ❌ مواد خاطئة: ['149', '150']، الصحيح: ['194', '195', '196', '209', '214', '217']",
+      "response_time": 12.58,
+      "difficulty": "complex",
+      "ai_answer_preview": "حسب المادة 149 والمادة 150 من قانون العمل المصري، تتم إجراءات تسوية النزاعات العمالية الفردية على النحو التالي:\n\n1.  **التسوية الودية للنزاعات الفردية (حسب المادة 149 من قانون العمل المصري):**\n    *  ..."
+    },
+    {
+      "question": "ما هي حقوق العامل عند إنهاء العقد؟",
+      "gt_id": "GT_013",
+      "legally_accurate": true,
+      "accuracy_score": 0.907,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 154 (من المواد الصحيحة: ['154', '156', '164', '165', '168'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.07065217391304347,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 90.7%)",
+      "response_time": 13.3,
+      "difficulty": "complex",
+      "ai_answer_preview": "حسب قانون العمل المصري، تختلف حقوق العامل عند إنهاء العقد بناءً على سبب وطرف الإنهاء، وذلك على النحو التالي:\n\n1.  **حسب المادة 168 من قانون العمل المصري - إنهاء العامل للعقد بسبب إخلال صاحب العمل بالت..."
+    },
+    {
+      "question": "هل يمكن للعامل التنازل عن إجازته السنوية؟",
+      "gt_id": "GT_014",
+      "legally_accurate": true,
+      "accuracy_score": 0.928,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['125']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.2777777777777778,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 92.8%)",
+      "response_time": 8.9,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب المادة 125 من قانون العمل المصري، لا يجوز للعامل التنازل عن إجازته السنوية.\n\nوتفصيلاً لذلك:\n*   **عدم جواز التنازل:** لا يجوز للعامل النزول عن إجازته السنوية.\n*   **التزام العامل بالإجازة:** يلتزم..."
+    },
+    {
+      "question": "ما هي قواعد تشغيل الأطفال؟",
+      "gt_id": "GT_015",
+      "legally_accurate": true,
+      "accuracy_score": 0.912,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 62 (من المواد الصحيحة: ['62', '63', '64', '65', '66'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.12121212121212122,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.2%)",
+      "response_time": 7.72,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب المادة 62 والمادة 65 من قانون العمل المصري، تحدد قواعد تشغيل الأطفال على النحو التالي:\n\n1.  **السن القانونية للتشغيل والتدريب (حسب المادة 62 من قانون العمل المصري):**\n    *   **حظر التشغيل:** يحظر..."
+    },
+    {
+      "question": "ما هي فترة الاختبار في عقد العمل؟",
+      "gt_id": "GT_016",
+      "legally_accurate": true,
+      "accuracy_score": 0.947,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['90']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.47058823529411764,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 94.7%)",
+      "response_time": 6.02,
+      "difficulty": "simple",
+      "ai_answer_preview": "حسب المادة 90 من قانون العمل المصري، تحدد فترة الاختبار في عقد العمل على النحو التالي:\n\n*   **المدة القصوى:** لا تزيد فترة الاختبار على **ثلاثة أشهر**.\n*   **عدد مرات التعيين تحت الاختبار:** لا يجوز ت..."
+    },
+    {
+      "question": "ما هي حالات الفصل المشروع للعامل؟",
+      "gt_id": "GT_017",
+      "legally_accurate": false,
+      "accuracy_score": 0.385,
+      "checks": {
+        "key_facts": {
+          "score": 0.3333333333333333,
+          "missing": [
+            "أوراق مزورة",
+            "غياب 20"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ لم يتم ذكر أي مادة قانونية",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.018867924528301886,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "أوراق مزورة",
+        "غياب 20"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 38.5%)\n\n**المشاكل:**\n• ناقص 2 من الحقائق الأساسية\n• ❌ لم يتم ذكر أي مادة قانونية",
+      "response_time": 18.8,
+      "difficulty": "complex",
+      "ai_answer_preview": "عذراً، حدث خطأ أثناء معالجة سؤالك. يرجى المحاولة مرة أخرى."
+    },
+    {
+      "question": "ما هي مدة إجازة الوضع للمرأة العاملة؟",
+      "gt_id": "GT_018",
+      "legally_accurate": true,
+      "accuracy_score": 0.911,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 54 (من المواد الصحيحة: ['54', '57'])",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.10843373493975904,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.1%)",
+      "response_time": 4.64,
+      "difficulty": "simple",
+      "ai_answer_preview": "حسب المادة 54 من قانون العمل المصري، تحدد مدة إجازة الوضع للمرأة العاملة على النحو التالي:\n\n*   **مدة الإجازة:** للعاملة الحق في إجازة وضع لمدة **أربعة أشهر**، وتشمل هذه المدة الفترة التي تسبق الوضع و..."
+    },
+    {
+      "question": "ما هي ساعات العمل الإضافية وأجرها؟",
+      "gt_id": "GT_019",
+      "legally_accurate": true,
+      "accuracy_score": 0.916,
+      "checks": {
+        "key_facts": {
+          "score": 1.0,
+          "missing": [],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر جميع المواد الصحيحة: ['121']",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.16346153846153846,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [],
+      "wrong_info": [],
+      "explanation": "✅ **إجابة دقيقة قانونياً** (النتيجة: 91.6%)",
+      "response_time": 6.65,
+      "difficulty": "medium",
+      "ai_answer_preview": "حسب المادة 121 من قانون العمل المصري، يجوز لصاحب العمل عدم التقيد بالأحكام الواردة بالمواد (117، 118، 119، 120) المتعلقة بساعات العمل العادية، وذلك في حالات معينة، ويستحق العامل في هذه الحالات أجراً إ..."
+    },
+    {
+      "question": "متى يستحق العامل علاوة سنوية؟",
+      "gt_id": "GT_020",
+      "legally_accurate": false,
+      "accuracy_score": 0.25,
+      "checks": {
+        "key_facts": {
+          "score": 0.0,
+          "missing": [
+            "3% من الأجر التأميني كحد أدنى",
+            "بعد سنة من التعيين",
+            "دورية سنوية",
+            "يمكن تخفيضها لظروف اقتصادية"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ لم يتم ذكر أي مادة قانونية",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.0,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "3% من الأجر التأميني كحد أدنى",
+        "بعد سنة من التعيين",
+        "دورية سنوية",
+        "يمكن تخفيضها لظروف اقتصادية"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 25.0%)\n\n**المشاكل:**\n• ناقص 4 من الحقائق الأساسية\n• ❌ لم يتم ذكر أي مادة قانونية",
+      "response_time": 8.05,
+      "difficulty": "medium",
+      "ai_answer_preview": "عذراً، حدث خطأ أثناء معالجة سؤالك. يرجى المحاولة مرة أخرى."
+    }
+  ],
+  "statistics": {
+    "total_tests": 20,
+    "passed": 13,
+    "failed": 7,
+    "pass_rate": 65.0,
+    "average_score": 0.76,
+    "difficulty_breakdown": {
+      "simple": {
+        "total": 6,
+        "passed": 5,
+        "avg_score": 0.885
+      },
+      "medium": {
+        "total": 9,
+        "passed": 6,
+        "avg_score": 0.744
+      },
+      "complex": {
+        "total": 5,
+        "passed": 2,
+        "avg_score": 0.639
+      }
+    },
+    "avg_response_time": 9.83
+  },
+  "timestamp": "2026-07-02T19:24:39.054449",
+  "mode": "live",
+  "total_questions": 20
+}

@@ -1,0 +1,158 @@
+{
+  "results": [
+    {
+      "question": "ما هي مدة الإجازة السنوية للعامل؟",
+      "gt_id": "GT_001",
+      "legally_accurate": false,
+      "accuracy_score": 0.475,
+      "checks": {
+        "key_facts": {
+          "score": 0.5,
+          "missing": [
+            "30 يوم بعد 10 سنوات",
+            "45 يوم لذوي الإعاقة"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ لم يتم ذكر أي مادة قانونية",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.24705882352941178,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "30 يوم بعد 10 سنوات",
+        "45 يوم لذوي الإعاقة"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 47.5%)\n\n**المشاكل:**\n• ناقص 2 من الحقائق الأساسية\n• ❌ لم يتم ذكر أي مادة قانونية",
+      "response_time": 2.76,
+      "difficulty": "simple",
+      "ai_answer_preview": "وفقًا للمادة 124 من قانون العمل المصري، تكون مدة الإجازة السنوية للعامل على النحو التالي:\n1.  **خمسة عشر يومًا** في السنة الأولى.\n2.  **واحد وعشرون يومًا** اعتبارًا من السنة الثانية.\n3.  **ثلاثون يومً..."
+    },
+    {
+      "question": "كم عدد ساعات العمل اليومية؟",
+      "gt_id": "GT_002",
+      "legally_accurate": false,
+      "accuracy_score": 0.643,
+      "checks": {
+        "key_facts": {
+          "score": 0.3333333333333333,
+          "missing": [
+            "8 ساعات يومياً",
+            "48 ساعة أسبوعياً"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 1.0,
+          "details": "✅ تم ذكر المادة 117 الصحيحة",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.1,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "8 ساعات يومياً",
+        "48 ساعة أسبوعياً"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 64.3%)\n\n**المشاكل:**\n• ناقص 2 من الحقائق الأساسية",
+      "response_time": 5.28,
+      "difficulty": "simple",
+      "ai_answer_preview": "وفقًا لقانون العمل المصري (قانون 14 لسنة 2025):\n\n1.  **ساعات العمل الفعلية:** لا يجوز تشغيل العامل تشغيلاً فعليًا أكثر من **ثماني ساعات** في اليوم، أو **ثمان وأربعين ساعة** في الأسبوع. لا تدخل في هذه ..."
+    },
+    {
+      "question": "ما هي شروط عقد العمل؟",
+      "gt_id": "GT_003",
+      "legally_accurate": false,
+      "accuracy_score": 0.363,
+      "checks": {
+        "key_facts": {
+          "score": 0.25,
+          "missing": [
+            "يجب أن يكون مكتوباً",
+            "ثلاث نسخ",
+            "يتضمن اسم المنشأة والعامل"
+          ],
+          "weight": 0.4,
+          "description": "تغطية الحقائق الأساسية"
+        },
+        "article_accuracy": {
+          "score": 0.0,
+          "details": "❌ لم يتم ذكر أي مادة قانونية",
+          "weight": 0.25,
+          "description": "دقة الإشارة للمواد"
+        },
+        "no_wrong_info": {
+          "score": 1.0,
+          "wrong_info_found": [],
+          "weight": 0.25,
+          "description": "عدم وجود معلومات خاطئة"
+        },
+        "semantic_similarity": {
+          "score": 0.13,
+          "weight": 0.1,
+          "description": "التشابه الدلالي مع الإجابة الصحيحة"
+        }
+      },
+      "missing_facts": [
+        "يجب أن يكون مكتوباً",
+        "ثلاث نسخ",
+        "يتضمن اسم المنشأة والعامل"
+      ],
+      "wrong_info": [],
+      "explanation": "❌ **إجابة غير دقيقة قانونياً** (النتيجة: 36.3%)\n\n**المشاكل:**\n• ناقص 3 من الحقائق الأساسية\n• ❌ لم يتم ذكر أي مادة قانونية",
+      "response_time": 3.75,
+      "difficulty": "medium",
+      "ai_answer_preview": "وفقًا للمادة 89 من قانون العمل المصري (قانون 14 لسنة 2025)، يلتزم صاحب العمل بتحرير عقد العمل كتابة باللغة العربية من أربع نسخ، وتوزع هذه النسخ كالتالي:\n*   نسخة يحتفظ بها صاحب العمل.\n*   نسخة تسلم لل..."
+    }
+  ],
+  "statistics": {
+    "total_tests": 3,
+    "passed": 0,
+    "failed": 3,
+    "pass_rate": 0.0,
+    "average_score": 0.494,
+    "difficulty_breakdown": {
+      "simple": {
+        "total": 2,
+        "passed": 0,
+        "avg_score": 0.559
+      },
+      "medium": {
+        "total": 1,
+        "passed": 0,
+        "avg_score": 0.363
+      }
+    },
+    "avg_response_time": 3.93
+  },
+  "timestamp": "2026-07-02T18:09:58.286719",
+  "mode": "live",
+  "total_questions": 3
+}

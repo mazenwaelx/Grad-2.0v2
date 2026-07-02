@@ -140,9 +140,11 @@ export default function Navbar({ isDark, toggleTheme, onLoginClick, onSignupClic
             className="flex items-center gap-3"
             whileHover={{ scale: 1.05 }}
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg">
-              <Scale className="w-7 h-7 text-white" />
-            </div>
+            <img 
+              src="/estasheer-logo.png" 
+              alt="Estasheer Logo" 
+              className="h-16 w-auto object-contain"
+            />
             <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
               Estasheer
             </span>

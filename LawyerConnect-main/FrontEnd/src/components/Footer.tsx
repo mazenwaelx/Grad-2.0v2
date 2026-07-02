@@ -27,9 +27,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
-                <Scale className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="/estasheer-logo.png" 
+                alt="Estasheer Logo" 
+                className="h-14 w-auto object-contain"
+              />
               <span className="text-xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-400 dark:to-primary-600 bg-clip-text text-transparent">
                 Estasheer
               </span>
